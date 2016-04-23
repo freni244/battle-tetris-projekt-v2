@@ -10,7 +10,7 @@
 
 (define *J*
   (new block%
-       [shape '((4 0) (5 0) (6 0) (6 1))]
+       [coordinates '((4 0) (5 0) (6 0) (6 1))]
        [type 'J]))
 
 (define *L*
@@ -41,7 +41,7 @@
 (define *board-1*
   (new board%
        [matrix (list (list 0 0 0 0 0 0 0 0 0 0)
-                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 1 1 1 1 1 1 1 1 1 1)
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)

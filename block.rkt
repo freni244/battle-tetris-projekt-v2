@@ -3,7 +3,8 @@
 
 (define block%
   (class object%
-    (init-field shape)
-    (field [place '()]
-           [hold '()])
+    (init-field coordinates
+                type)
+    (field [hold '()])
+  (super-new)))
     
