@@ -18,7 +18,7 @@
     (define/public (ins-to-list el pos list)
       (let ((before (take list (- pos 1)))
             (after (drop list pos)))
-        (append before (cons el after))))
+        (begin (set! matrix (append before (cons el after))) matrix)))
     
     (define/public (select-n n list)
       (cond ((null? list) '())
@@ -30,6 +30,34 @@
     (define/public (ins-to-matrix num x-pos y-pos matrix)
       (let ((new-row (ins-to-list num x-pos (select-n y-pos matrix)))) ;; number inserted to row
         (ins-to-list new-row y-pos matrix)))
+
+
+;;;;;;;;; Antingen denna (funkade ej ännu i "draw-game"):
+    ;; Infogar ett blocks coordinater och färg/powerup (dvs nummer) 
+    (define (insert-block-alt1 block-color block-coord)
+      (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
+            (part2 (second block-coord))
+            (part3 (third block-coord))
+            (part4 (fourth block-coord)))
+        (ins-to-matrix block-color (car part1) (cadr part1) matrix)
+        (ins-to-matrix block-color (car part2) (cadr part2) matrix)
+        (ins-to-matrix block-color (car part3) (cadr part3) matrix)
+        (ins-to-matrix block-color (car part4) (cadr part4) matrix)))
+
+    (define (random-from-to n m)
+        (+ n (random (- (+ m 1) n))))
+;;;;;;;; Eller denna: testa genom att skriva (send *board-1* insert-block-alt2 (send *T* get-place)) i draw-game
+    ;; Infogar ett blocks coordinater och färg/powerup (dvs nummer) 
+    (define/public (insert-block-alt2 block-coord)
+      (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
+            (part2 (second block-coord))
+            (part3 (third block-coord))
+            (part4 (fourth block-coord))
+            (block-color (random-from-to 1 7))) ;; 1-7 representerar en färg ; (gör det här -> behöver ej block-color som variabel. ...)
+        (ins-to-matrix block-color (car part1) (cadr part1) matrix)
+        (ins-to-matrix block-color (car part2) (cadr part2) matrix)
+        (ins-to-matrix block-color (car part3) (cadr part3) matrix)
+        (ins-to-matrix block-color (car part4) (cadr part4) matrix)))
 
     ;; Sätter rad number y till en nollrad. Inargument: row-y (siffra)
     (define/public (remove-row row-y)

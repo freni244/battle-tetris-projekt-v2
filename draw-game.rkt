@@ -16,7 +16,8 @@
   (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
     (car (shuffle color-list))))
 
-;; Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block
+;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
+;; iggnorera då vi inte kommer att behöva denna!
 (define (draw-block canvas block-dc block color)
   (let ((part1 (first block))
         (part2 (second block))
