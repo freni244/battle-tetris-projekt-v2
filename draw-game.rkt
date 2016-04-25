@@ -12,24 +12,6 @@
                      [y 0]))
 (send *window* show #t)
 
-(define (random-color)
-  (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
-    (car (shuffle color-list))))
-
-;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
-;;;;;; iggnorera då vi inte kommer att behöva denna!
-(define (draw-block canvas block-dc block color)
-  (let ((part1 (first block))
-        (part2 (second block))
-        (part3 (third block))
-        (part4 (fourth block)))
-    (send block-dc set-brush color 'solid)
-    (send block-dc draw-rectangle (car part1) (cadr part1) 20 20)  ;(+ 100 (* (car part1) 20)) (+ 100 (* (cadr part1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
-    (send block-dc draw-rectangle (car part2) (cadr part2) 20 20) ;(+ 100 (* (car part2) 20)) (+ 100 (* (cadr part2) 20)) 20 20)
-    (send block-dc draw-rectangle (car part3) (cadr part3) 20 20) ;(+ 100 (* (car part3) 20)) (+ 100 (* (cadr part3) 20)) 20 20)
-    (send block-dc draw-rectangle (car part4) (cadr part4) 20 20))) ;(+ 100 (* (car part4) 20)) (+ 100 (* (cadr part4) 20)) 20 20)))
-  
-
 (define (draw-grid canvas dc x y width height color)
   (send dc draw-rectangle x y width height) ;; x y width height
   (send dc set-brush color 'solid)
@@ -79,10 +61,28 @@
      (begin (draw-grid canvas dc x y 20 20 "magenta")
             (draw-lines canvas dc (cdr items) (+ x 20) y)))))
 
+(define (random-color)
+  (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
+    (car (shuffle color-list))))
+
+;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
+;;;;;; iggnorera då vi inte kommer att behöva denna!
+(define (draw-block canvas block-dc block color)
+  (let ((part1 (first block))
+        (part2 (second block))
+        (part3 (third block))
+        (part4 (fourth block)))
+    (send block-dc set-brush color 'solid)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block   ; (car part1) (cadr part1) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
+
+
     
 (define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
-  (draw-block canvas dc (send *I* get-place) (random-color))
-  (draw-board canvas dc))
+  (draw-board canvas dc)
+  (draw-block canvas dc (send *I* get-place) (random-color)))
   ;(send *a-canvas* refresh-now))
  ; (send *a-canvas* refresh-now))
 
@@ -91,7 +91,16 @@
 
 (define *draw-timer* (new timer%
                      [notify-callback refresh-draw-cycle]))
-(send *draw-timer* start 1000 #f)
+(send *draw-timer* start 60 #f)
+
+(define (draw-fall)
+  ;(send **
+  (send *T* move-down))
+  
+
+(define *fall-timer* (new timer%
+                     [notify-callback block-movement]))
+(send *fall-timer* start 1000 #f)
 
 (define *a-canvas*
   (new canvas%
