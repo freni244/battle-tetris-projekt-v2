@@ -1,15 +1,23 @@
 #lang racket
 (provide block%)
+;(require "board.rkt")
+
 
 
 (define block%
   (class object%
     (init-field coordinates
-                type)
+                type
+                color)
     (field [place '()]
            [hold '()]
            [rotation 'up])
+           ;[color 0]) ;; färgen är en slumpad siffra mellan 1-7. (kommer att inkludera powerup sen)
 
+    (define/public (get-color) color)
+
+    ; (define/public (create-block) ?
+    
     (define/public (fall);Ska skicka blocket ned i botten.
       1)
 
@@ -22,19 +30,21 @@
 
     ;adderar amount till koordinaten, kan vara negativ.
     (define/public (move-coords amount1 amount2 amount3 amount4 amount5 amount6 amount7 amount8);ändrar koordinaterna mha proc och amount,proc + eller -, amount hur mycket den ska flyttas.
-      (set! coordinates (list (cons (+ (get-coord 1 'x coordinates) amount1) (+ (get-coord 1 'y coordinates) amount2));Första koordinaten
-                              (cons (+ (get-coord 2 'x coordinates) amount3) (+ (get-coord 2 'y coordinates) amount4));Andra koordinaten
-                              (cons (+ (get-coord 3 'x coordinates) amount5) (+ (get-coord 3 'y coordinates) amount6));Trejde koordinaten
-                              (cons (+ (get-coord 4 'x coordinates) amount7) (+ (get-coord 4 'y coordinates) amount8)))));Fjärde koordinaten
+      (set! coordinates (list (list (+ (get-coord 1 'x coordinates) amount1) (+ (get-coord 1 'y coordinates) amount2));Första koordinaten
+                              (list (+ (get-coord 2 'x coordinates) amount3) (+ (get-coord 2 'y coordinates) amount4));Andra koordinaten
+                              (list (+ (get-coord 3 'x coordinates) amount5) (+ (get-coord 3 'y coordinates) amount6));Trejde koordinaten
+                              (list (+ (get-coord 4 'x coordinates) amount7) (+ (get-coord 4 'y coordinates) amount8)))));Fjärde koordinaten
 
+                             ;; ändrade från cons till list då: (cadr (car '((4 . 2) (5 . 2) (6 . 2) (5 . 3)))) inte funkar med par (används i insert-block)
+    
     (define/public (move-down)
       (move-coords 0 1 0 1 0 1 0 1))
     
-    ;(define/public (move-down)
-     ; (set! coordinates (list (cons (+ (get-coord 1 'x coordinates) 1) (get-coord 1 'y coordinates));Första koordinaten
-      ;                        (cons (+ (get-coord 2 'x coordinates) 1) (get-coord 2 'y coordinates));Andra koordinaten
-       ;                       (cons (+ (get-coord 3 'x coordinates) 1) (get-coord 3 'y coordinates));Trejde koordinaten
-        ;                      (cons (+ (get-coord 4 'x coordinates) 1) (get-coord 4 'y coordinates)))));Fjärde koordinaten
+;    (define/public (move-down)
+;      (set! coordinates (list (cons (+ (get-coord 1 'x coordinates) 1) (get-coord 1 'y coordinates));Första koordinaten
+;                              (cons (+ (get-coord 2 'x coordinates) 1) (get-coord 2 'y coordinates));Andra koordinaten
+;                              (cons (+ (get-coord 3 'x coordinates) 1) (get-coord 3 'y coordinates));Trejde koordinaten
+;                              (cons (+ (get-coord 4 'x coordinates) 1) (get-coord 4 'y coordinates)))));Fjärde koordinaten
 
     (define/public (move-direction direction)
       (cond
