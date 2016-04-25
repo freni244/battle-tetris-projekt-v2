@@ -18,16 +18,16 @@
 
 ;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
 ;;;;;; iggnorera då vi inte kommer att behöva denna!
-(define (draw-old canvas block-dc block color)
+(define (draw-block canvas block-dc block color)
   (let ((part1 (first block))
         (part2 (second block))
         (part3 (third block))
         (part4 (fourth block)))
     (send block-dc set-brush color 'solid)
-    (send block-dc draw-rectangle (car part1) (cadr part1) 20 20) ;; alla fyra delar bildar ett helt block
-    (send block-dc draw-rectangle (car part2) (cadr part2) 20 20)
-    (send block-dc draw-rectangle (car part3) (cadr part3) 20 20)
-    (send block-dc draw-rectangle (car part4) (cadr part4) 20 20)))
+    (send block-dc draw-rectangle (car part1) (cadr part1) 20 20)  ;(+ 100 (* (car part1) 20)) (+ 100 (* (cadr part1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
+    (send block-dc draw-rectangle (car part2) (cadr part2) 20 20) ;(+ 100 (* (car part2) 20)) (+ 100 (* (cadr part2) 20)) 20 20)
+    (send block-dc draw-rectangle (car part3) (cadr part3) 20 20) ;(+ 100 (* (car part3) 20)) (+ 100 (* (cadr part3) 20)) 20 20)
+    (send block-dc draw-rectangle (car part4) (cadr part4) 20 20))) ;(+ 100 (* (car part4) 20)) (+ 100 (* (cadr part4) 20)) 20 20)))
   
 
 (define (draw-grid canvas dc x y width height color)
@@ -81,17 +81,21 @@
 
     
 (define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
-  ;(draw-block canvas dc (send *I* get-place) (random-color))
+  (draw-block canvas dc (send *I* get-place) (random-color))
   (draw-board canvas dc))
+  ;(send *a-canvas* refresh-now))
  ; (send *a-canvas* refresh-now))
 
-;; timers ska vara någon annan stans...
-;(define *timer* (new timer%
-;             [notify-callback draw-cycle]))
+(define (refresh-draw-cycle)
+  (send *a-canvas* refresh-now))
 
-;(send *timer* start 1000 #f)
+(define *draw-timer* (new timer%
+                     [notify-callback refresh-draw-cycle]))
+(send *draw-timer* start 1000 #f)
 
 (define *a-canvas*
   (new canvas%
        [parent *window*]
        [paint-callback draw-cycle]))
+
+(provide (all-defined-out))
