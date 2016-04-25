@@ -1,5 +1,5 @@
 #lang racket/gui
-(provide *draw-timer*)
+;(provide *draw-timer*)
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
