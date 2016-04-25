@@ -1,0 +1,1 @@
+("6.3" ("0166da90217d63c0247e5fb294147e94bd7897ed" . "3913c75717a5215b525b8341016c40ce18ab8b80") #"/Users/fre483/GitHub/battle-tetris-projekt-v2/block.rkt" #"/Users/fre483/GitHub/battle-tetris-projekt-v2/board.rkt" #"/Users/fre483/GitHub/battle-tetris-projekt-v2/cmd_store.rkt" (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
