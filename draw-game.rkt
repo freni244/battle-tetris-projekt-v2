@@ -17,8 +17,8 @@
     (car (shuffle color-list))))
 
 ;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
-;; iggnorera då vi inte kommer att behöva denna!
-(define (draw-block canvas block-dc block color)
+;;;;;; iggnorera då vi inte kommer att behöva denna!
+(define (draw-old canvas block-dc block color)
   (let ((part1 (first block))
         (part2 (second block))
         (part3 (third block))
@@ -35,7 +35,7 @@
   (send dc set-brush color 'solid)
   (send dc set-pen "black" 2 'solid))
 
-(define (draw-board canvas dc) ;; hämta board från game-init
+(define (draw-board canvas dc) ;; hämta och ritar board från game-init
   (draw-board-help canvas dc 100 100 (send *board-1* get-matrix)))
 
 (define (draw-board-help canvas dc x y items)
@@ -48,18 +48,41 @@
 (define (draw-lines canvas dc items x y)
   (cond
     ((empty? (cdr items))
-     (draw-grid canvas dc x y 20 20 "white"))
+     ;(draw-grid canvas dc x y 20 20 "white"))
+     (cond ((= (car items) 0)
+            (begin (draw-grid canvas dc x y 20 20 "white")))
+           ((= (car items) 1)
+            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; behövs fler villkor..? eller bara white
+    
     ((= (car items) 0)
      (begin (draw-grid canvas dc x y 20 20 "white")
             (draw-lines canvas dc (cdr items) (+ x 20) y)))
     ((= (car items) 1)
-     (begin (draw-grid canvas dc x y 20 20 "green")
+     (begin (draw-grid canvas dc x y 20 20 "lime")
+            (draw-lines canvas dc (cdr items) (+ x 20) y)))
+    ((= (car items) 2)
+     (begin (draw-grid canvas dc x y 20 20 "blue")
+            (draw-lines canvas dc (cdr items) (+ x 20) y)))
+    ((= (car items) 3)
+     (begin (draw-grid canvas dc x y 20 20 "red")
+            (draw-lines canvas dc (cdr items) (+ x 20) y)))
+    ((= (car items) 4)
+     (begin (draw-grid canvas dc x y 20 20 "yellow")
+            (draw-lines canvas dc (cdr items) (+ x 20) y)))
+    ((= (car items) 5)
+     (begin (draw-grid canvas dc x y 20 20 "orange")
+            (draw-lines canvas dc (cdr items) (+ x 20) y)))
+    ((= (car items) 6)
+     (begin (draw-grid canvas dc x y 20 20 "cyan")
+            (draw-lines canvas dc (cdr items) (+ x 20) y)))
+    ((= (car items) 7)
+     (begin (draw-grid canvas dc x y 20 20 "magenta")
             (draw-lines canvas dc (cdr items) (+ x 20) y)))))
 
+    
 (define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
-  (draw-block canvas dc (send *I* get-place) (random-color))
+  ;(draw-block canvas dc (send *I* get-place) (random-color))
   (draw-board canvas dc))
- ; (send *I* move-down))...
  ; (send *a-canvas* refresh-now))
 
 ;; timers ska vara någon annan stans...
@@ -68,7 +91,6 @@
 
 ;(send *timer* start 1000 #f)
 
-;;;;;;;;; Ska vi ha allt i samma canvas? (vet inte vad som blir bättre)
 (define *a-canvas*
   (new canvas%
        [parent *window*]
