@@ -93,17 +93,17 @@
                      [notify-callback refresh-draw-cycle]))
 (send *draw-timer* start 60 #f)
 
-;(define (draw-fall)
+(define (draw-fall)
   
-  ;(send *I* fall)  ; current-block
-  ;(send *I* move-down)
-;  )
+  (send *I* fall)  ; current-block
+  ;;(send *I* move-down)
+  )
   
   ;(send *board-1* insert-block (send *T* get-color) (send *T* get-place)))
   
 
-;(define *fall-timer* (new timer%
-;                     [notify-callback draw-fall]))
+(define *fall-timer* (new timer%
+                     [notify-callback draw-fall]))
 ;(send *fall-timer* start 1000 #f)
 
 (define *a-canvas*
