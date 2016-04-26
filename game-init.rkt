@@ -1,7 +1,7 @@
 #lang racket
 (require "block.rkt")
 (require "board.rkt")
-(require "cmd_store.rkt")
+;(require "movement-and-cmd.rkt")
 
 
 (define *I*

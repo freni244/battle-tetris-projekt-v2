@@ -2,7 +2,7 @@
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
-(require "cmd_store.rkt")
+(require "movement-and-cmd.rkt")
 
 (define *window* (new frame%
                      [label "window"]
