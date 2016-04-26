@@ -1,27 +1,34 @@
 #lang racket
 (provide board%)
-;(require "block.rkt")
-;(require "game-init.rkt")
 
 (define board%
   (class object%
     (init-field matrix)
     (field [next-blocks '()]
-           [hold '()])
+           [hold '()]
+           [all-types '()])
 
     (define/public (get-matrix) matrix)
 
+    (define/public (get-all-types) all-types)
+    
+    (define/public (add-all-types type)
+      (set! all-types (append (list type) all-types)))
+    
     ;; Lägger block sist i listan next-blocks. Inargument: block (som objekt)
-    (define/public (add-next-block block)
+    (define/public (queue-block block)
       (set! next-blocks (append next-blocks (list block))))
-
-    ;; Reutrnerar och tar bort första blocket ur next-blocks.
+    
+    ;; Reutrnerar första blocket ur next-blocks.
     (define/public (get-cur-block)
       (if (null? next-blocks)
-          #f
-          (begin (car next-blocks)
-                 (set! next-blocks (cdr next-blocks)))))
-
+          (printf "error: there are no blocks left in next-blocks")
+          (car next-blocks)))
+    
+    ;; Tar bort första blocket ur next-blocks
+    (define/public (remove-cur-block)
+      (set! next-blocks (cdr next-blocks)))
+    
     (define/public (get-next-blocks) next-blocks)
 
     (define/public (get-hold) hold)
@@ -101,6 +108,7 @@
     (define/public (row-of-zeros? row)
       (equal? '(0 0 0 0 0 0 0 0 0 0) row))
 
+    ;; Skapar koordinatlista med y och de x koordinater som inte är noll ur x-list. Dvs returnerar "occuperade" koordinater (x>0).
     (define/public (take-occ-coord y x-lst)
       (define (build-lst x y x-lst xy-lst)
         (cond ((null? x-lst) xy-lst)
@@ -116,27 +124,10 @@
               ((not (row-of-zeros? (car board)))
                (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list)))
               (else (make-coord-list (+ y 1) (cdr board) coord-list))))
-      (make-coord-list 1 matrix '()))
-
-
-    
-    ;; skapar 
-;    (define/public (create-coord-lst y x-lst)
-;      (map (lambda (x) (list x y)) x-lst))
-;    
-;    (define/public (occupied-coord) ;; board som argument när lägger till fler boards...
-;      (define (make-coord-list y board coord-list)
-;        (let ((all-but-zero (filter (lambda (x) (and (not (= 0 x)) x)) (car board))))
-;          (cond ((null? board) coord-list)
-;                ((not (row-of-zeros? (car board)))
-;                 (make-coord-list (+ y 1) (cdr board) (append (create-coord-lst y all-but-zero) coord-list)))
-;                (else (make-coord-list (+ y 1) (cdr board) coord-list)))))
-;      (make-coord-list 1 matrix '()))
-      
+      (make-coord-list 1 matrix '()))      
     
     (define/public (check-powerup row)
       (occurs? 8 row)) ;; beroende på vilket nummer vi ska ha för powerup
-    
     
  ;   (define/public (activate-powerup row)
  ;     ())

@@ -1,21 +1,9 @@
 #lang racket/gui
+;(provide *draw-timer*)
 ;(require "block.rkt")
 ;(require "board.rkt")
 ;(require "game-init.rkt")
-;(require "movement-and-cmd.rkt")
-
-
-;
-;(define (game-loop)
-;  (let
-;      ([])
-;    (cond
-;      )))
-;
-;(define (play-game)
-;  (send *window* show #t)
-;  (game-loop))
-
+;(require "cmd_store.rkt")
 
 
 ; (send *draw-timer* start 1000 #f)

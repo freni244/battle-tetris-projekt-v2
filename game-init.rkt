@@ -1,8 +1,6 @@
 #lang racket
 (require "block.rkt")
 (require "board.rkt")
-;(require "movement-and-cmd.rkt")
-
 
 (define *I*
   (new block%
@@ -69,6 +67,25 @@
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0))]))
 
-;(send *board-1* add-next-block *T*)
+;(define (generate-block)
+;  (let ((blocks '(*I* *J* *L* *O* *S* *T* *Z* )))
+;    (car (shuffle blocks))))
+
+;; Lägger till alla typer av block (som objekt) i *board-1*.
+(send *board-1* add-all-types *I*)
+(send *board-1* add-all-types *J*)
+(send *board-1* add-all-types *L*)
+(send *board-1* add-all-types *O*)
+(send *board-1* add-all-types *S*)
+(send *board-1* add-all-types *T*)
+(send *board-1* add-all-types *Z*)
+
+(send *board-1* queue-block *I*)  ;; egentligen inte här som vi kommer att sätta in block på kö
+(send *board-1* queue-block *J*)
+(send *board-1* queue-block *L*)
+(send *board-1* queue-block *O*)
+(send *board-1* queue-block *S*)
+(send *board-1* queue-block *T*)
+(send *board-1* queue-block *Z*)
 
 (provide (all-defined-out))
