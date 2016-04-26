@@ -67,16 +67,16 @@
 
 ;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
 ;;;;;; iggnorera då vi inte kommer att behöva denna!
-(define (draw-block canvas block-dc block color)
+(define (draw-block canvas dc block color)
   (let ((part1 (first block))
         (part2 (second block))
         (part3 (third block))
         (part4 (fourth block)))
-    (send block-dc set-brush color 'solid)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block   ; (car part1) (cadr part1) 20 20)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
+    (send dc set-brush color 'solid)
+    (send dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block   ; (car part1) (cadr part1) 20 20)
+    (send dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20)
+    (send dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20)
+    (send dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
 
 
     
@@ -93,15 +93,18 @@
                      [notify-callback refresh-draw-cycle]))
 (send *draw-timer* start 60 #f)
 
-(define (draw-fall)
-  (send *T* move-down)
-  (send *board-1* remove-block (send *T* get-place))
-  (send *board-1* insert-block (send *T* get-color) (send *T* get-place)))
+;(define (draw-fall)
+  
+  ;(send *I* fall)  ; current-block
+  ;(send *I* move-down)
+;  )
+  
+  ;(send *board-1* insert-block (send *T* get-color) (send *T* get-place)))
   
 
-(define *fall-timer* (new timer%
-                     [notify-callback draw-fall]))
-(send *fall-timer* start 1000 #f)
+;(define *fall-timer* (new timer%
+;                     [notify-callback draw-fall]))
+;(send *fall-timer* start 1000 #f)
 
 (define *a-canvas*
   (new canvas%

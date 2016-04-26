@@ -3,6 +3,7 @@
 (require "board.rkt")
 (require "cmd_store.rkt")
 
+
 (define *I*
   (new block%
        [coordinates '((4 1) (5 1) (6 1) (7 1))]
