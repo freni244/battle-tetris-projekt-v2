@@ -16,8 +16,7 @@
     
     (define/public (get-color) color)
 
-    (define/public (create-block)
-      
+    ;(define/public (create-block) 
     
 ;    (define/public (occurs? el list)
 ;      (not (null? (filter (lambda (x) (equal? x el)) list))))

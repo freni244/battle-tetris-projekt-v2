@@ -69,4 +69,6 @@
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0))]))
 
+;(send *board-1* add-next-block *T*)
+
 (provide (all-defined-out))

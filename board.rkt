@@ -11,6 +11,17 @@
 
     (define/public (get-matrix) matrix)
 
+    ;; Lägger block sist i listan next-blocks. Inargument: block (som objekt)
+    (define/public (add-next-block block)
+      (set! next-blocks (append next-blocks (list block))))
+
+    ;; Reutrnerar och tar bort första blocket ur next-blocks.
+    (define/public (get-cur-block)
+      (if (null? next-blocks)
+          #f
+          (begin (car next-blocks)
+                 (set! next-blocks (cdr next-blocks)))))
+
     (define/public (get-next-blocks) next-blocks)
 
     (define/public (get-hold) hold)
