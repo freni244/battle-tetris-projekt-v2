@@ -11,8 +11,19 @@
            [rotation 'up])
            ;[color 0]) ;; beroende på om vi ska slumpa färger.
 
-    (define/public (get-color) color)
+    (define/public (get-color-num) color) ;; returns color as number
 
+
+    (define/public (get-color-name) ;; returns name of color
+      (cond ((= color 1) "lime")
+            ((= color 2) "blue")
+            ((= color 3) "red")
+            ((= color 4) "yellow")
+            ((= color 5) "orange")
+            ((= color 6) "cyan")
+            ((= color 7) "magenta")
+            (else "gold")))
+    
     ;(define/public (generate-block)...
 
     (define/public (occurs? el list)

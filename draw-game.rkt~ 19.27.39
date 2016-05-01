@@ -78,11 +78,12 @@
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
-  (let ((cur-block (send *board-1* get-cur-block)))
-        ;(cur-block-color (send (send *board-1* get-cur-block) get-color) ; men siffra i nuläget
-  (draw-board canvas dc)
-  (draw-block canvas dc (send cur-block get-place) "cyan")
-  (draw-block canvas dc (send *I* get-place) "magenta")))
+  (let ((cur-block (send *board-1* get-cur-block))
+        (block-color (send (send *board-1* get-cur-block) get-color-name)))
+    (draw-board canvas dc)
+    (draw-block canvas dc (send cur-block get-place) block-color)
+    ;(draw-block canvas dc (send *I* get-place) "magenta")
+    ))
   ;(send *a-canvas* refresh-now))
 
 (define (refresh-draw-cycle)
@@ -92,16 +93,34 @@
                      [notify-callback refresh-draw-cycle]))
 (send *draw-timer* start 60 #f)
 
+(define (generate-block)
+  (let ((blocks (send *board-1* get-all-types)))
+    (car (shuffle blocks))))
+
 ;; ska anropa fall senare. Nu rör den sig ner i oändligheten.
 (define (draw-fall)
-  (let ((cur-block (send *board-1* get-cur-block)))
-   ; (send cur-block fall)  ; current-block
-  (send *I* move-down)
-  ))
+  (let ((cur-block (send *board-1* get-cur-block))
+        (block-color (send (send *board-1* get-cur-block) get-color-num))
+        (block-coord (send (send *board-1* get-cur-block) get-place))
+        (next-block-coord (send (send *board-1* get-cur-block) next-place))
+        (occupied-coord (send *board-1* get-occupied-coord))
+        (bottom '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
+        (new-block (generate-block)))
+    (cond ((or (occurs-coordinates? next-block-coord occupied-coord) (occurs-coordinates? block-coord bottom))
+           (send *board-1* queue-block new-block)
+           (send *board-1* remove-cur-block)
+           (send *board-1* insert-block block-color block-coord) ;; sätter in blocket i board.
+           (send *board-1* queue-block (generate-block))) ;; lägger ett block på kö
+          (else (send cur-block move-down)))))
+
+    
+  ;  (send cur-block fall)  ; current-block
+  ;(send *I* move-down)
+ 
 
 (define *fall-timer* (new timer%
                      [notify-callback draw-fall]))
-(send *fall-timer* start 1000 #f)
+;(send *fall-timer* start 300 #f)
 
 (define *a-canvas*
   (new canvas%

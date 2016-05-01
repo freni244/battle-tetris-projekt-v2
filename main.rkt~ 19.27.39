@@ -1,9 +1,17 @@
 #lang racket/gui
+<<<<<<< HEAD
 ;(provide *draw-timer*)
 ;(require "block.rkt")
 ;(require "board.rkt")
 ;(require "game-init.rkt")
 ;(require "cmd_store.rkt")
+=======
+(provide *draw-timer*)
+(require "block.rkt")
+(require "board.rkt")
+(require "game-init.rkt")
+(require "cmd_store.rkt")
+>>>>>>> master
 
 
 ; (send *draw-timer* start 1000 #f)

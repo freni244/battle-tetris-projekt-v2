@@ -55,3 +55,19 @@
             (else (occurs-coordinates? (cdr coord-lst-1) coord-lst-2))))
 
 (define block-coordinates '((5 6) (6 6) (6 7) (7 6)))
+
+;testet:
+; (occurs-coordinates? block-coordinates (occupied-coord matrix))
+
+(define color 0)
+
+
+(define (get-color-name) ;; returns name of color
+  (cond ((= color 1) "lime")
+        ((= color 2) "blue")
+        ((= color 3) "red")
+        ((= color 4) "yellow")
+        ((= color 5) "orange")
+        ((= color 6) "cyan")
+        ((= color 7) "magenta")
+        (else "gold")))
