@@ -52,7 +52,7 @@
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
-                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 1 1 1 1 1 1 1 1 1 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
@@ -87,6 +87,5 @@
 (send *board-1* queue-block *S*)
 (send *board-1* queue-block *T*)
 (send *board-1* queue-block *Z*)
-
 
 (provide (all-defined-out))

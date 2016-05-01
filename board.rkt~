@@ -108,7 +108,7 @@
     (define/public (row-of-zeros? row)
       (equal? '(0 0 0 0 0 0 0 0 0 0) row))
 
-    ;; Skapar koordinatlista med y, samt de x koordinater som inte är noll ur x-list. Dvs returnerar "occuperade" koordinater (x>0).
+    ;; Skapar koordinatlista med y och de x koordinater som inte är noll ur x-list. Dvs returnerar "occuperade" koordinater (x>0).
     (define/public (take-occ-coord y x-lst)
       (define (build-lst x y x-lst xy-lst)
         (cond ((null? x-lst) xy-lst)
@@ -122,9 +122,9 @@
       (define (make-coord-list y board coord-list)
         (cond ((null? board) coord-list)
               ((not (row-of-zeros? (car board)))
-               (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list))) ;;;* (vid append (- y 1) löser bara om den kommer ovanifrån...)
+               (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list)))
               (else (make-coord-list (+ y 1) (cdr board) coord-list))))
-      (make-coord-list 1 matrix '()))
+      (make-coord-list 1 matrix '()))      
     
     (define/public (check-powerup row)
       (occurs? 8 row)) ;; beroende på vilket nummer vi ska ha för powerup

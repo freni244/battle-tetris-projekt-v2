@@ -3,9 +3,9 @@
 
 ;;;;;;; Namn på fil kan ändras, samt vad som finns i.
 
-(define (generate-block)
-  (let ((blocks (send *board-1* get-all-types)))
-    (car (shuffle blocks))))
+;(define (generate-block)
+;  (let ((blocks (send *board-1* get-all-types)))
+;    (car (shuffle blocks))))
 
 (define (occurs? el list)
   (not (null? (filter (lambda (x) (equal? x el)) list))))
@@ -17,16 +17,16 @@
         (else (occurs-coordinates? (cdr coord-lst-1) coord-lst-2))))
 
 ;; Gör så att "current" block faller till botten.
-(define (fall cur-block)
-  (let ((cur-block (send *board-1* get-cur-block))
-        (block-coord (send (send *board-1* get-cur-block) get-place))
-        (occupied-coord (send *board-1* get-occupied-coord))
-        (bottom '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
-        (new-block (generate-block)))
-    (cond (((or (occurs-coordinates? block-coord occupied-coord)) (occurs-coordinates? block-coord bottom))
-           (send *board-1* queue-block new-block)
-           (send *board-1* remove-cur-block)
-           );; (lägg till block i matris också)
-          (else (send cur-block move-down)))))
+;(define (fall cur-block)
+;  (let ((cur-block (send *board-1* get-cur-block))
+;        (block-coord (send (send *board-1* get-cur-block) get-place))
+;        (occupied-coord (send *board-1* get-occupied-coord))
+;        (bottom '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
+;        (new-block (generate-block)))
+;    (cond (((or (occurs-coordinates? block-coord occupied-coord)) (occurs-coordinates? block-coord bottom))
+;           (send *board-1* queue-block new-block)
+;           (send *board-1* remove-cur-block)
+;           );; (lägg till block i matris också)
+;          (else (send cur-block move-down)))))
 
 (provide (all-defined-out))

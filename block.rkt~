@@ -18,8 +18,6 @@
     (define/public (occurs? el list)
       (not (null? (filter (lambda (x) (equal? x el)) list))))
 
-    (define/public (fall)
-      (move-down))
     ; Kollar om samma koordinater finns i två listor med koordinater.
 ;    (define/public (occurs-coordinates? coord-lst-1 coord-lst-2)
 ;      (cond ((or (null? coord-lst-1) (null? coord-lst-2)) #f)
@@ -46,6 +44,8 @@
                               (list (+ (get-coord 2 'x coordinates) amount3) (+ (get-coord 2 'y coordinates) amount4));Andra koordinaten
                               (list (+ (get-coord 3 'x coordinates) amount5) (+ (get-coord 3 'y coordinates) amount6));Trejde koordinaten
                               (list (+ (get-coord 4 'x coordinates) amount7) (+ (get-coord 4 'y coordinates) amount8)))));Fjärde koordinaten
+
+                             ;; ändrade från cons till list då: (cadr (car '((4 . 2) (5 . 2) (6 . 2) (5 . 3)))) inte funkar med par (används i insert-block)
     
     (define/public (move-down)
       (move-coords 0 1 0 1 0 1 0 1))
@@ -210,19 +210,6 @@
 
     (define/public (get-place);Ska returnera koordinaterna som par i en lista
       coordinates)
-
-;(define (next coord)
-;    (define (build-next coord new)
-;      (cond ((null? coord) new)
-;            (else (build-next (cdr coord) (cons (list (caar coord) (+ (cadar coord) 1)) new)))))
-;    (build-next coord '()))
-    
-    (define/public (next-place)
-      (define (build-next coord next-coord)
-        (cond ((null? coord) next-coord)
-              (else (build-next (cdr coord) (cons (list (caar coord) (+ (cadar coord) 1)) next-coord)))))
-      (build-next coordinates '()))
-      
 
     (super-new)))
     
