@@ -101,8 +101,8 @@
             #f)))
     
     ;; Kollar om första raden i en board-matrix har något annat än 0. Inargument: board. Returnerar #t #f.
-    (define/public (too-high?)
-      (let ((all-but-zero (filter (lambda (x) (and (not (= 0 x)) x)) (car matrix))))
+    (define/public (too-high? board)
+      (let ((all-but-zero (filter (lambda (x) (and (not (= 0 x)) x)) (car board))))
         (not (null? all-but-zero))))
 
     (define/public (row-of-zeros? row)

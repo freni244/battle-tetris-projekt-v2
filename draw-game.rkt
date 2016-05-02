@@ -1,4 +1,6 @@
 #lang racket/gui
+;(provide *draw-timer*)
+;(provide *fall-timer*)
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
@@ -89,9 +91,6 @@
 (define (refresh-draw-cycle)
   (send *a-canvas* refresh-now))
 
-(define *draw-timer* (new timer%
-                     [notify-callback refresh-draw-cycle]))
-(send *draw-timer* start 60 #f)
 
 (define (generate-block)
   (let ((blocks (send *board-1* get-all-types)))
@@ -120,9 +119,13 @@
   ;(send *I* move-down)
  
 
+(define *draw-timer* (new timer%
+                     [notify-callback refresh-draw-cycle]))
+(send *draw-timer* start 60 #f) ;; aktiveras i main...
+
 (define *fall-timer* (new timer%
                      [notify-callback draw-fall]))
-;(send *fall-timer* start 300 #f)
+(send *fall-timer* start 300 #f)
 
 (define *a-canvas*
   (new canvas%
