@@ -13,6 +13,7 @@
 ;; kolla om "to high"
 ;; rita saker
 
+;;; Vet inte om vi ska ha de här eller i draw...
 (define *draw-timer* (new timer%
                      [notify-callback refresh-draw-cycle]))
 

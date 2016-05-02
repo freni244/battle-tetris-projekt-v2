@@ -15,9 +15,9 @@
 (send *window* show #t)
 
 (define (draw-grid canvas dc x y width height color)
-  (send dc draw-rectangle x y width height)
   (send dc set-brush color 'solid)
-  (send dc set-pen "black" 2 'solid))
+  (send dc set-pen "black" 2 'solid)
+  (send dc draw-rectangle x y width height))
 
 (define (draw-board canvas dc) ;; hämtar och ritar board från game-init
   (draw-board-help canvas dc 100 100 (send *board-1* get-matrix)))
@@ -33,9 +33,9 @@
   (cond
     ((empty? (cdr items))
      (cond ((= (car items) 0)
-            (begin (draw-grid canvas dc x y 20 20 "white")))
+            (draw-grid canvas dc x y 20 20 "white"))
            ((= (car items) 1)
-            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; tillfällig lösning
+            (draw-grid canvas dc x y 20 20 "lime"))))    ;; tillfällig lösning
     ((= (car items) 0)
      (begin (draw-grid canvas dc x y 20 20 "white")
             (draw-lines canvas dc (cdr items) (+ x 20) y)))
