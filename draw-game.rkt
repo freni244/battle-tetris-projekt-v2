@@ -14,9 +14,10 @@
 
 
 (define (draw-grid canvas dc x y width height color)
-  (send dc draw-rectangle x y width height) ;; x y width height
   (send dc set-brush color 'solid)
-  (send dc set-pen "black" 2 'solid))
+  (send dc set-pen "black" 2 'solid)
+  (send dc draw-rectangle x y width height)) ;; x y width height
+  
 
 (define (draw-board canvas dc) ;; hämta och ritar board från game-init
   (draw-board-help canvas dc 100 100 (send *board-1* get-matrix)))
@@ -33,9 +34,9 @@
     ((empty? (cdr items))
      ;(draw-grid canvas dc x y 20 20 "white"))
      (cond ((= (car items) 0)
-            (begin (draw-grid canvas dc x y 20 20 "white")))
+            (draw-grid canvas dc x y 20 20 "white"))
            ((= (car items) 1)
-            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; behövs fler villkor..? eller bara white
+            (draw-grid canvas dc x y 20 20 "lime")))) ;; behövs fler villkor..? eller bara white
     
     ((= (car items) 0)
      (begin (draw-grid canvas dc x y 20 20 "white")
@@ -60,7 +61,7 @@
             (draw-lines canvas dc (cdr items) (+ x 20) y)))
     ((= (car items) 7)
      (begin (draw-grid canvas dc x y 20 20 "magenta")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))))
+            (draw-lines canvas dc (cdr items) (+ x 20) y))))) 
 
 
 (define (random-color)
@@ -85,7 +86,6 @@
 (define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
   (draw-board canvas dc)
   (draw-block canvas dc (send *I* get-place) (random-color)))
-
   ;(send *a-canvas* refresh-now))
  ; (send *a-canvas* refresh-now))
 

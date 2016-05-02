@@ -13,7 +13,10 @@
 (send *window* show #t)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> felfix-boardritning
 (define (random-color)
   (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
     (car (shuffle color-list))))
@@ -32,7 +35,10 @@
     (send block-dc draw-rectangle (car part4) (cadr part4) 20 20))) ;(+ 100 (* (car part4) 20)) (+ 100 (* (cadr part4) 20)) 20 20)))
   
 
+<<<<<<< HEAD
 >>>>>>> origin/master
+=======
+>>>>>>> felfix-boardritning
 (define (draw-grid canvas dc x y width height color)
   (send dc draw-rectangle x y width height) ;; x y width height
   (send dc set-brush color 'solid)
@@ -83,6 +89,7 @@
             (draw-lines canvas dc (cdr items) (+ x 20) y)))))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 (define (random-color)
   (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
     (car (shuffle color-list))))
@@ -106,11 +113,16 @@
   (draw-board canvas dc)
   (draw-block canvas dc (send *I* get-place) (random-color)))
 =======
+=======
+>>>>>>> felfix-boardritning
     
 (define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
   (draw-block canvas dc (send *I* get-place) (random-color))
   (draw-board canvas dc))
+<<<<<<< HEAD
 >>>>>>> origin/master
+=======
+>>>>>>> felfix-boardritning
   ;(send *a-canvas* refresh-now))
  ; (send *a-canvas* refresh-now))
 
@@ -119,6 +131,7 @@
 
 (define *draw-timer* (new timer%
                      [notify-callback refresh-draw-cycle]))
+<<<<<<< HEAD
 <<<<<<< HEAD
 (send *draw-timer* start 60 #f)
 
@@ -132,6 +145,9 @@
 =======
 (send *draw-timer* start 1000 #f)
 >>>>>>> origin/master
+=======
+(send *draw-timer* start 1000 #f)
+>>>>>>> felfix-boardritning
 
 (define *a-canvas*
   (new canvas%
