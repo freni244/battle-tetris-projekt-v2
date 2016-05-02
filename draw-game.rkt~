@@ -107,15 +107,13 @@
         (bottom '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
         (new-block (generate-block)))
     (cond ((or (occurs-coordinates? next-block-coord occupied-coord) (occurs-coordinates? block-coord bottom))
+           (send *board-1* queue-block new-block)
            (send *board-1* remove-cur-block)
-           (send cur-block reset-coord)
            (send *board-1* insert-block block-color block-coord) ;; sätter in blocket i board.
-           (send *board-1* queue-block new-block)) ;; lägger ett block på kö
+           (send *board-1* queue-block (generate-block))) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
 
-;;;;;;;;;;;;;; måste reseta *T* kordinater   set coordinate start-coordinate
-
-
+    
   ;  (send cur-block fall)  ; current-block
   ;(send *I* move-down)
  
