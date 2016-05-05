@@ -71,9 +71,9 @@
     (define/public (move-direction direction)
       (cond
         ((eq? direction 'right)
-         (move-coords 0 1 0 1 0 1 0 1))
+         (move-coords 1 0 1 0 1 0 1 0))
         ((eq? direction 'left)
-         (move-coords 0 -1 0 -1 0 -1 0 -1))))
+         (move-coords -1 0 -1 0 -1 0 -1 0))))
     
 ;    (define/public (move-direction direction);mata in symbolerna 'right eller 'left för att flytta blocken åt det hållet.
 ;      (cond

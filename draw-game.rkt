@@ -86,10 +86,10 @@
     (draw-block canvas dc (send cur-block get-place) block-color)
     ;(draw-block canvas dc (send *I* get-place) "magenta")
     ))
-  ;(send *a-canvas* refresh-now))
+  ;(send *board-1-canvas* refresh-now))
 
 (define (refresh-draw-cycle)
-  (send *a-canvas* refresh-now))
+  (send *board-1-canvas* refresh-now))
 
 
 (define (generate-block)
@@ -111,12 +111,6 @@
            (send *board-1* insert-block block-color block-coord) ;; sätter in blocket i board.
            (send *board-1* queue-block new-block)) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
-
-;;;;;;;;;;;;;; måste reseta *T* kordinater   set coordinate start-coordinate
-
-
-  ;  (send cur-block fall)  ; current-block
-  ;(send *I* move-down)
  
 
 (define *draw-timer* (new timer%
@@ -125,11 +119,26 @@
 
 (define *fall-timer* (new timer%
                      [notify-callback draw-fall]))
-(send *fall-timer* start 300 #f)
+(send *fall-timer* start 400 #f)
 
-(define *a-canvas*
-  (new canvas%
+;; Subklass av canvas%, som kan hantera key-events
+(define input-canvas%
+  (class canvas%
+       (init-field keyboard-handler)
+       (define/override (on-char key-event)
+         (keyboard-handler key-event))
+       (super-new)))
+
+(define *board-1-canvas* ;; vet inte om det är till en fördel att dela upp det i *board-1-canvas*/*board-2-canvas*
+  (new input-canvas%
        [parent *window*]
-       [paint-callback draw-cycle]))
+       [paint-callback draw-cycle]
+       [keyboard-handler (lambda (key-event)
+                           (let ((key-code (send key-event get-key-code)))
+                             (if (not (equal? key-code 'release))
+                                 (move key-code)  ;(send *my-rotating-image* key-down key-code)
+                                 (void))))]))
+
+(send *board-1-canvas* focus)
 
 (provide (all-defined-out))

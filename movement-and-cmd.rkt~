@@ -1,19 +1,11 @@
 #lang racket
-(require "block.rkt")
-(require "board.rkt")
 (require "game-init.rkt")
 
-;(define (legal-move
+;;;;;;; Namn på fil kan ändras, samt vad som finns i.
 
-(define (move key-event) ;; block..
-  (let ((cur-block (send *board-1* get-cur-block)))
-    (cond
-      [(equal? key-event 'left) (send cur-block move-direction 'left)]
-      [(equal? key-event 'right) (send cur-block move-direction 'right)]
-      [(equal? key-event 'down) (send cur-block move-down)]
-      ;[(equal? key-event #\space) (send cur-block rotate)]
-      )))
-
+;(define (generate-block)
+;  (let ((blocks (send *board-1* get-all-types)))
+;    (car (shuffle blocks))))
 
 (define (occurs? el list)
   (not (null? (filter (lambda (x) (equal? x el)) list))))
