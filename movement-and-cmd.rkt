@@ -3,17 +3,31 @@
 (require "board.rkt")
 (require "game-init.rkt")
 
-;(define (legal-move
+;(define (legal-move? coord)
+;  (
 
-(define (move key-event) ;; block..
-  (let ((cur-block (send *board-1* get-cur-block)))
+;; Styrning av block (sidledes, ner & rotation). Inget händer om coordinat ej occuperad eller utanför brädet.
+(define (move key-event)
+  (let ((cur-block (send *board-1* get-cur-block))
+        (occupied-coord (send *board-1* get-occupied-coord))
+        (bottom (send *board-1* get-bottom))
+        (left-wall (send *board-1* get-left-wall))
+        (right-wall (send *board-1* get-right-wall)))
     (cond
-      [(equal? key-event 'left) (send cur-block move-direction 'left)]
-      [(equal? key-event 'right) (send cur-block move-direction 'right)]
-      [(equal? key-event 'down) (send cur-block move-down)]
+      [(equal? key-event 'left)
+       (cond ((or (occurs-coordinates? (send cur-block return-move-direction 'left) occupied-coord) (occurs-coordinates? (send cur-block get-place) left-wall))
+              void)
+             (else (send cur-block move-direction 'left)))]
+      [(equal? key-event 'right)
+       (cond ((or (occurs-coordinates? (send cur-block return-move-direction 'right) occupied-coord) (occurs-coordinates? (send cur-block get-place) right-wall))
+              void)
+             (else (send cur-block move-direction 'right)))]
+      [(equal? key-event 'down)
+       (cond ((or (occurs-coordinates? (send cur-block return-move-down) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom))
+              void)
+             (else (send cur-block move-down)))]
       ;[(equal? key-event #\space) (send cur-block rotate)]
       )))
-
 
 (define (occurs? el list)
   (not (null? (filter (lambda (x) (equal? x el)) list))))
@@ -23,18 +37,5 @@
   (cond ((or (null? coord-lst-1) (null? coord-lst-2)) #f)
         ((occurs? (car coord-lst-1) coord-lst-2) #t)
         (else (occurs-coordinates? (cdr coord-lst-1) coord-lst-2))))
-
-;; Gör så att "current" block faller till botten.
-;(define (fall cur-block)
-;  (let ((cur-block (send *board-1* get-cur-block))
-;        (block-coord (send (send *board-1* get-cur-block) get-place))
-;        (occupied-coord (send *board-1* get-occupied-coord))
-;        (bottom '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
-;        (new-block (generate-block)))
-;    (cond (((or (occurs-coordinates? block-coord occupied-coord)) (occurs-coordinates? block-coord bottom))
-;           (send *board-1* queue-block new-block)
-;           (send *board-1* remove-cur-block)
-;           );; (lägg till block i matris också)
-;          (else (send cur-block move-down)))))
 
 (provide (all-defined-out))

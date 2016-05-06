@@ -4,14 +4,20 @@
 (require "board.rkt")
 (require "game-init.rkt")
 (require "draw-game.rkt")
-;(require "cmd_store.rkt")
 
-; (send *draw-timer* start 1000 #f)
-
-;; i loop:
-;; tar bort rad om den är full (både i board-1 och 2)
-;; kolla om "to high"
-;; rita saker
+;; Ändrar spelet om villkor är uppfyllda. (tex tar bort fulla rader och kollar om block är i toppen).
+(define (conditions)  ;; istället för game-loop...
+  (let
+      ([full-row-pos (send *board-1* count-to-full-row)])
+    
+    (cond [(send *board-1* too-high?)
+           (send *fall-timer* stop)
+           (send *condition-timer* stop)]
+          
+          [(send *board-1* exist-full-row?)
+           ;(send *board-1* remove-full-row) ;;;;;; behövs nog inte då collapse-from kan ersätta
+           (send *board-1* collapse-from full-row-pos)]
+          [else void])))
 
 ;;; Vet inte om vi ska ha de här eller i draw...
 (define *draw-timer* (new timer%
@@ -20,20 +26,12 @@
 (define *fall-timer* (new timer%
                      [notify-callback draw-fall]))
 
-(define (game-loop)
-  ;(let
-  ;    ([])
-  ;(send *draw-timer* start 60 #f)
-  ;(send *fall-timer* start 300 #f)
-  (cond ((send *board-1* too-high?)
-         (display "You lose"))
-        ;(( full-row
-        (else (game-loop)
-              ;(send *fall-timer* start 300 #f)
-              )))
+(define *condition-timer* (new timer%
+                               [notify-callback conditions]))
 
 (define (play-game)
   (send *window* show #t)
-;  (send *draw-timer* start 60 #f)
-;  (send *fall-timer* start 300 #f)
-  (game-loop))
+  (send *draw-timer* start 16 #f)
+  (send *fall-timer* start 300 #f)
+  (send *condition-timer* start 16 #f)
+  )

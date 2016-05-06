@@ -12,7 +12,7 @@
                      [height 600]
                      [x 0]	 
                      [y 0]))
-(send *window* show #t)
+;(send *window* show #t)
 
 (define (draw-grid canvas dc x y width height color)
   (send dc set-brush color 'solid)
@@ -77,6 +77,9 @@
     (send dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
     (send dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
 
+;; tillfälligt... 
+(define (draw-text canvas dc)
+  (send dc draw-text "You lose!" 180 75))
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
@@ -91,7 +94,6 @@
 (define (refresh-draw-cycle)
   (send *board-1-canvas* refresh-now))
 
-
 (define (generate-block)
   (let ((blocks (send *board-1* get-all-types)))
     (car (shuffle blocks))))
@@ -101,9 +103,9 @@
   (let ((cur-block (send *board-1* get-cur-block))
         (block-color (send (send *board-1* get-cur-block) get-color-num))
         (block-coord (send (send *board-1* get-cur-block) get-place))
-        (next-block-coord (send (send *board-1* get-cur-block) next-place))
+        (next-block-coord (send (send *board-1* get-cur-block) return-move-down))
         (occupied-coord (send *board-1* get-occupied-coord))
-        (bottom '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
+        (bottom (send *board-1* get-bottom))
         (new-block (generate-block)))
     (cond ((or (occurs-coordinates? next-block-coord occupied-coord) (occurs-coordinates? block-coord bottom))
            (send *board-1* remove-cur-block)
@@ -111,15 +113,14 @@
            (send *board-1* insert-block block-color block-coord) ;; sätter in blocket i board.
            (send *board-1* queue-block new-block)) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
- 
 
-(define *draw-timer* (new timer%
-                     [notify-callback refresh-draw-cycle]))
-(send *draw-timer* start 60 #f) ;; aktiveras i main...
-
-(define *fall-timer* (new timer%
-                     [notify-callback draw-fall]))
-(send *fall-timer* start 400 #f)
+;(define *draw-timer* (new timer%
+;                     [notify-callback refresh-draw-cycle]))
+;(send *draw-timer* start 16 #f) ;; aktiveras i main...
+;
+;(define *fall-timer* (new timer%
+;                     [notify-callback draw-fall]))
+;(send *fall-timer* start 300 #f)
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%
