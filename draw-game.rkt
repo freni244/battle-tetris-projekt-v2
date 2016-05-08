@@ -89,7 +89,7 @@
     (draw-block canvas dc (send cur-block get-place) block-color)
     ;(draw-block canvas dc (send *I* get-place) "magenta")
     ))
-  ;(send *board-1-canvas* refresh-now))
+  ;(send *board-1-canvas* refresh-now))v
 
 (define (refresh-draw-cycle)
   (send *board-1-canvas* refresh-now))

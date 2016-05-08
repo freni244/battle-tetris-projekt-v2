@@ -3,9 +3,6 @@
 (require "board.rkt")
 (require "game-init.rkt")
 
-;(define (legal-move? coord)
-;  (
-
 ;; Styrning av block (sidledes, ner & rotation). Inget händer om coordinat ej occuperad eller utanför brädet.
 (define (move key-event)
   (let ((cur-block (send *board-1* get-cur-block))
@@ -26,7 +23,14 @@
        (cond ((or (occurs-coordinates? (send cur-block return-move-down) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom))
               void)
              (else (send cur-block move-down)))]
-      ;[(equal? key-event #\space) (send cur-block rotate)]
+      [(equal? key-event #\space)
+       (send cur-block rotate 'right)]
+      [(equal? key-event 'shift)
+       (send cur-block rotate 'left)]
+       ;(cond ((or (occurs-coordinates? (send cur-block return-rotate 'right) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom)) ;; utöka med vägg osv
+       ;       void)
+       ;      (else (send cur-block rotate 'right)))]
+      
       )))
 
 (define (occurs? el list)

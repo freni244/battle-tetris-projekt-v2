@@ -89,7 +89,6 @@
 
 (send *board-1* queue-block *I*)  ;; egentligen inte här som vi kommer att sätta in block på kö
 ;(send *board-1* queue-block *J*)
-;(send *board-1* queue-block *L*)
 ;(send *board-1* queue-block *O*)
 ;(send *board-1* queue-block *S*)
 ;(send *board-1* queue-block *T*)
