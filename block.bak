@@ -312,6 +312,7 @@
                     (set! rotation 'right)
                     (move-coords 1 1 0 0 1 -1 0 -2))))
             ((eq? rotation 'left)
+<<<<<<< HEAD
              (cond ((eq? direction 'right)
                     (set! rotation 'up)
                     (move-coords 1 1 0 0 1 -1 0 -2))
@@ -322,7 +323,13 @@
          (else
           (display "There is no such type "))
          ))
-
+=======
+             ((if (eq? direction 'right)
+                  (move-coords 1 1 0 0 1 -1 0 -2)
+                  (move-coords -1 1 0 0 1 1 2 0)))))))))
+    
+        
+>>>>>>> master
 
     ;; Ändrar till roterade koordinater
     (define/public (rotate direction)

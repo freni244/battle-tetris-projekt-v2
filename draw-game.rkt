@@ -12,12 +12,15 @@
                      [height 600]
                      [x 0]	 
                      [y 0]))
+
 ;(send *window* show #t)
+
 
 (define (draw-grid canvas dc x y width height color)
   (send dc set-brush color 'solid)
   (send dc set-pen "black" 2 'solid)
   (send dc draw-rectangle x y width height))
+
 
 (define (draw-board canvas dc) ;; hämtar och ritar board från game-init
   (draw-board-help canvas dc 100 100 (send *board-1* get-matrix)))
@@ -59,7 +62,26 @@
             (draw-lines canvas dc (cdr items) (+ x 20) y)))
     ((= (car items) 7)
      (begin (draw-grid canvas dc x y 20 20 "magenta")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))))
+            (draw-lines canvas dc (cdr items) (+ x 20) y))))) 
+
+
+(define (random-color)
+  (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
+    (car (shuffle color-list))))
+
+;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
+;;;;;; iggnorera då vi inte kommer att behöva denna!
+(define (draw-block canvas block-dc block color)
+  (let ((part1 (first block))
+        (part2 (second block))
+        (part3 (third block))
+        (part4 (fourth block)))
+    (send block-dc set-brush color 'solid)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block   ; (car part1) (cadr part1) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
+
 
 (define (random-color)
   (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
@@ -91,6 +113,7 @@
     ))
   ;(send *board-1-canvas* refresh-now))v
 
+
 (define (refresh-draw-cycle)
   (send *board-1-canvas* refresh-now))
 
@@ -114,6 +137,7 @@
            (send *board-1* queue-block new-block)) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
 
+
 ;(define *draw-timer* (new timer%
 ;                     [notify-callback refresh-draw-cycle]))
 ;(send *draw-timer* start 16 #f) ;; aktiveras i main...
@@ -121,6 +145,7 @@
 ;(define *fall-timer* (new timer%
 ;                     [notify-callback draw-fall]))
 ;(send *fall-timer* start 300 #f)
+
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%
