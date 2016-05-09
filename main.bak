@@ -32,6 +32,6 @@
 (define (play-game)
   (send *window* show #t)
   (send *draw-timer* start 16 #f)
-  (send *fall-timer* start 700 #f)
+  (send *fall-timer* start 300 #f)
   (send *condition-timer* start 16 #f)
   )
