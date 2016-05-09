@@ -1,1 +1,5 @@
+<<<<<<< HEAD
+("6.3" ("82985e5c4bed212d6ab00fdbb6264ec627c3775c" . "71c22187edaee51860a9f99998d2b67fc510e70c") #"C:\\Users\\User\\Documents\\GitHub\\battle-tetris-projekt-v2\\block.rkt" #"C:\\Users\\User\\Documents\\GitHub\\battle-tetris-projekt-v2\\board.rkt" (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
+=======
 ("6.3" ("05b4c9043d92ac11e1438569a9057f46a5e7c188" . "81903d871ea1c9f847ab20fbda35a0dc1e66cb28") #"C:\\Users\\User\\Documents\\GitHub\\battle-tetris-projekt-v2\\block.rkt" #"C:\\Users\\User\\Documents\\GitHub\\battle-tetris-projekt-v2\\board.rkt" #"C:\\Users\\User\\Documents\\GitHub\\battle-tetris-projekt-v2\\cmd_store.rkt" (collects #"racket" #"main.rkt") (collects #"racket" #"runtime-config.rkt"))
+>>>>>>> master
