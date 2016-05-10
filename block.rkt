@@ -7,7 +7,6 @@
                 start-coordinates
                 type
                 color) ; färgen är en slumpad siffra mellan 1-7
-                
     (field [place '()]
            [hold '()]
            [rotation 'up]
@@ -24,7 +23,7 @@
             ((= color 5) "orange")
             ((= color 6) "cyan")
             ((= color 7) "magenta")
-            (else "gold")))      
+            (else "gold")))
     
     ;(define/public (generate-block)...
 
@@ -111,14 +110,14 @@
                     (move-coords 2 -2 1 -1 0 0 -1 1))
                    (else
                     (set! rotation 'left)
-                    (move-coords 2 2 1 1 0 0 1 1))))
+                    (move-coords 1 1 0 0 -1 -1 -2 -2))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
                    (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 -2 -2))
                   (else
                    (set! rotation 'up)
-                   (move-coords -2 2 -1 1 0 0 1 -1))))
+                   (move-coords 2 2 1 1 0 0 1 1))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
                    (set! rotation 'left)
@@ -219,7 +218,7 @@
                    (move-coords -1 0 0 -1 0 1 1 0))
                   (else
                    (set! rotation 'right)
-                   (move-coords 0 -1 1 0 -1 0 0 1))))
+                   (move-coords  0 -1 1 0 -1 0 0 1))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
                    (set! rotation 'up)
@@ -325,6 +324,7 @@
           (display "There is no such type "))
          ))
 
+
     ;; Ändrar till roterade koordinater
     (define/public (rotate direction)
       (set! coordinates (return-rotate direction)))
@@ -350,10 +350,9 @@
 
     (define/public (reset-rotation)
       (set! rotation start-rotation))
-    
-    (define/public (reset-block)
-       (begin (reset-coord) (reset-rotation)))
 
+    (define/public (reset-block)
+      (begin (reset-coord) (reset-rotation)))
     
     (super-new)))
     

@@ -3,28 +3,13 @@
 
 (define board%
   (class object%
-    (init-field matrix
-                left-key
-                right-key
-                down-key
-                rotate-right-key
-                rotate-left-key)
+    (init-field matrix)
     (field [next-blocks '()]
            [hold '()]
            [all-types '()])
 
     (define/public (get-matrix) matrix)
 
-    (define/public (get-left-key) left-key)
-    
-    (define/public (get-right-key) right-key)
-
-    (define/public (get-down-key) down-key)
-
-    (define/public (get-rotate-right-key) rotate-right-key)
-
-    (define/public (get-rotate-left-key) rotate-left-key)
-    
     (define/public (get-bottom)
       '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
     
