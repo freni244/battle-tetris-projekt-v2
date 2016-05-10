@@ -104,26 +104,26 @@
       (cond
         ((eq? type 'I)
          (cond
-            ((eq? rotation 'up)
-             (cond ((eq? direction 'right)
-                    (set! rotation 'right)   ;;;;; kommer bli fel då anropas två gånger om både return-rotate och rotate kallas...
-                    (move-coords 2 -2 1 -1 0 0 -1 1))
-                   (else
-                    (set! rotation 'left)
-                    (move-coords 1 1 0 0 -1 -1 -2 -2))))
+           ((eq? rotation 'up)
+            (cond ((eq? direction 'right)
+                   (set! rotation 'right)   ;;;;; kommer bli fel då anropas två gånger om både return-rotate och rotate kallas...
+                   (move-coords 2 -2 1 -1 0 0 -1 1))
+                  (else
+                   (set! rotation 'left)
+                   (move-coords 1 1 0 0 -1 -1 -2 -2))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
                    (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 -2 -2))
                   (else
                    (set! rotation 'up)
-                   (move-coords 2 2 1 1 0 0 1 1))))
+                   (move-coords -2 2 -1 1 0 0 1 -1))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
                    (set! rotation 'left)
                    (move-coords -2 2 -1 1 0 0 1 -1))
                   (else
-                   (set! direction 'right)
+                   (set! rotation 'right)
                    (move-coords -1 -1 0 0 1 1 2 2))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
@@ -142,14 +142,14 @@
                    (move-coords 1 -1 0 0 -1 1 -2 0))
                   (else
                    (set! rotation 'left)
-                   (move-coords 1 1 0 0 -1 -1 0 -2)))) ;1 1 0 0 -1 -1 0 -2))))
+                   (move-coords 1 1 0 0 -1 -1 0 -2))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
                    (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 0 -2))
                   (else
                    (set! rotation 'up)
-                   (move-coords -1 1 0 0 1 -1 2 0)))) ; -1 1 0 0 1 -1 2 0))))
+                   (move-coords -1 1 0 0 1 -1 2 0))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
                    (set! rotation 'left)
@@ -170,10 +170,10 @@
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
                    (set! rotation 'right)
-                   (move-coords 1 -1 0 0 -1 1 0 -2)) ;2 0 1 -1 0 0 1 -1))
+                   (move-coords 1 -1 0 0 -1 1 0 -2)) 
                   (else
                    (set! rotation 'left)
-                   (move-coords 1 1 0 0 -1 -1 2 0))))   ; -1 -1 0 0 1 1 2 0))))
+                   (move-coords 1 1 0 0 -1 -1 2 0))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
                    (set! rotation 'down)
@@ -304,7 +304,7 @@
                     (move-coords 1 1 0 0 1 -1 0 -2))
                    (else
                     (set! rotation 'up)
-                    (move-coords -1 1 0 0 1 1 2 0)))
+                    (move-coords -1 1 0 0 1 1 2 0))))
             ((eq? rotation 'down)
              (cond ((eq? direction 'right)
                     (set! rotation 'left)
@@ -318,7 +318,7 @@
                     (move-coords -1 -1 0 0 -1 1 0 2))
                    (else
                     (set! rotation 'down)
-                    (move-coords 1 -1 0 0 -1 -1 -2 0)))))
+                    (move-coords 1 -1 0 0 -1 -1 -2 0))))
             (else #f)))
          (else
           (display "There is no such type "))
