@@ -72,11 +72,50 @@
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
                      (list 0 0 0 0 0 0 0 0 0 0)
-                     (list 0 0 0 0 0 0 0 0 0 0))]))
+                     (list 0 0 0 0 0 0 0 0 0 0))]
+       [left-key 'left]
+       [right-key 'right]
+       [down-key 'down]
+       [rotate-right-key #\space]
+       [rotate-left-key #\m]))
 
-;(define (generate-block)
-;  (let ((blocks '(*I* *J* *L* *O* *S* *T* *Z* )))
-;    (car (shuffle blocks))))
+(define *board-2*
+  (new board%
+       [matrix (list (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0)
+                     (list 0 0 0 0 0 0 0 0 0 0))]
+       [left-key #\a]
+       [right-key #\d]
+       [down-key #\s]
+       [rotate-right-key #\e]
+       [rotate-left-key #\q]))
+
+(define (return-color-from-num num)
+  (cond ((= num 1) "lime")
+        ((= num 2) "blue")
+        ((= num 3) "red")
+        ((= num 4) "yellow")
+        ((= num 5) "orange")
+        ((= num 6) "cyan")
+        ((= num 7) "magenta")
+        (else "white"))) ;; beroende på vilken bakgrundsfärgen ska vara "DodgerBlue"
 
 ;; Lägger till alla typer av block (som objekt) i *board-1*.
 (send *board-1* add-all-types *I*)
@@ -94,5 +133,14 @@
 ;(send *board-1* queue-block *T*)
 ;(send *board-1* queue-block *Z*)
 
+(send *board-2* queue-block *I*)
+
+(send *board-2* add-all-types *I*)
+(send *board-2* add-all-types *J*)
+(send *board-2* add-all-types *L*)
+(send *board-2* add-all-types *O*)
+(send *board-2* add-all-types *S*)
+(send *board-2* add-all-types *T*)
+(send *board-2* add-all-types *Z*)
 
 (provide (all-defined-out))
