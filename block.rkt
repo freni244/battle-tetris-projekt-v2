@@ -9,7 +9,8 @@
                 color) ; färgen är en slumpad siffra mellan 1-7
     (field [place '()]
            [hold '()]
-           [rotation 'up])
+           [rotation 'up]
+           [start-rotation 'up])
            ;[color 0]) ;; beroende på om vi ska slumpa färger.
 
     (define/public (get-color-num) color) ;; returns color as number
@@ -346,7 +347,13 @@
     
     (define/public (reset-coord)
       (set! coordinates start-coordinates))
-      
+
+    (define/public (reset-rotation)
+      (set! rotation start-rotation))
+
+    (define/public (reset-block)
+      (begin (reset-coord) (reset-rotation)))
+    
     (super-new)))
     
     
