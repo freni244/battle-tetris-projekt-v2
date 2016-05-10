@@ -42,14 +42,14 @@
        [coordinates '((4 1) (5 1) (6 1) (5 2))]
        [start-coordinates '((4 1) (5 1) (6 1) (5 2))]
        [type 'T]
-       [color 6]))
+       [color 7])) ;6
 
 (define *Z*
   (new block%
        [coordinates '((4 1) (5 1) (5 2) (6 2))]
        [start-coordinates '((4 1) (5 1) (5 2) (6 2))]
        [type 'Z]
-       [color 7]))
+       [color 6])) ;7
 
 (define *board-1*
   (new board%

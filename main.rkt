@@ -37,6 +37,6 @@
   (send *window* show #t)
   (send *draw-timer* start 16 #f)
   (send *fall-timer-b1* start 300 #f)
-  (send *fall-timer-b2* start 300 #f) 
+  ;(send *fall-timer-b2* start 300 #f) 
   (send *condition-timer* start 16 #f)
   )

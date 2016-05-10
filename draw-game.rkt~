@@ -1,10 +1,21 @@
 #lang racket/gui
+<<<<<<< HEAD
 ;(provide *draw-timer*)
 ;(provide *fall-timer*)
+=======
+<<<<<<< HEAD
+>>>>>>> origin/Fredrik-branch
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
 (require "movement-and-cmd.rkt")
+=======
+<<<<<<< HEAD
+(require "block.rkt")
+(require "board.rkt")
+(require "game-init.rkt")
+(require "cmd_store.rkt")
+>>>>>>> master
 
 (define *window* (new frame%
                      [label "window"]
@@ -15,11 +26,23 @@
 ;(send *window* show #t)
 
 (define (draw-grid canvas dc x y width height color)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  (send dc draw-rectangle x y width height)
+>>>>>>> origin/Fredrik-branch
   (send dc set-brush color 'solid)
   (send dc set-pen "black" 2 'solid)
   (send dc draw-rectangle x y width height))
 
 (define (draw-board canvas dc) ;; hämtar och ritar board från game-init
+=======
+  (send dc draw-rectangle x y width height) ;; x y width height
+  (send dc set-brush color 'solid)
+  (send dc set-pen "black" 2 'solid))
+
+(define (draw-board canvas dc) ;; hämta och ritar board från game-init
+>>>>>>> master
   (draw-board-help canvas dc 100 100 (send *board-1* get-matrix)))
 
 (define (draw-board-help canvas dc x y items)
@@ -32,10 +55,23 @@
 (define (draw-lines canvas dc items x y)
   (cond
     ((empty? (cdr items))
+<<<<<<< HEAD
      (cond ((= (car items) 0)
             (draw-grid canvas dc x y 20 20 "white"))
            ((= (car items) 1)
+<<<<<<< HEAD
             (draw-grid canvas dc x y 20 20 "lime"))))    ;; tillfällig lösning
+=======
+            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; tillfällig lösning
+=======
+     ;(draw-grid canvas dc x y 20 20 "white"))
+     (cond ((= (car items) 0)
+            (begin (draw-grid canvas dc x y 20 20 "white")))
+           ((= (car items) 1)
+            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; behövs fler villkor..? eller bara white
+    
+>>>>>>> master
+>>>>>>> origin/Fredrik-branch
     ((= (car items) 0)
      (begin (draw-grid canvas dc x y 20 20 "white")
             (draw-lines canvas dc (cdr items) (+ x 20) y)))
@@ -65,12 +101,19 @@
   (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
     (car (shuffle color-list))))
 
+<<<<<<< HEAD
 ;; Ritar block givet lista av blockets koordinater (tex (send *I* get-place)).
 (define (draw-block canvas dc block color)
+=======
+;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
+;;;;;; iggnorera då vi inte kommer att behöva denna!
+(define (draw-block canvas block-dc block color)
+>>>>>>> master
   (let ((part1 (first block))
         (part2 (second block))
         (part3 (third block))
         (part4 (fourth block)))
+<<<<<<< HEAD
     (send dc set-brush color 'solid)
     (send dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
     (send dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20) ;; koordinaterna multipliceras med 20 så att det motsvarar
@@ -89,11 +132,31 @@
     (draw-block canvas dc (send cur-block get-place) block-color)
     ;(draw-block canvas dc (send *I* get-place) "magenta")
     ))
+<<<<<<< HEAD
   ;(send *board-1-canvas* refresh-now))v
+=======
+  ;(send *a-canvas* refresh-now))
+=======
+    (send block-dc set-brush color 'solid)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block   ; (car part1) (cadr part1) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20)
+    (send block-dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
+
+
+    
+(define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
+  (draw-board canvas dc)
+  (draw-block canvas dc (send *I* get-place) (random-color)))
+  ;(send *a-canvas* refresh-now))
+ ; (send *a-canvas* refresh-now))
+>>>>>>> master
+>>>>>>> origin/Fredrik-branch
 
 (define (refresh-draw-cycle)
   (send *board-1-canvas* refresh-now))
 
+<<<<<<< HEAD
 (define (generate-block)
   (let ((blocks (send *board-1* get-all-types)))
     (car (shuffle blocks))))
@@ -121,6 +184,16 @@
 ;(define *fall-timer* (new timer%
 ;                     [notify-callback draw-fall]))
 ;(send *fall-timer* start 300 #f)
+=======
+(define (draw-fall)
+  ;(send **
+  (send *T* move-down))
+  
+
+(define *fall-timer* (new timer%
+                     [notify-callback draw-fall]))
+(send *fall-timer* start 1000 #f)
+>>>>>>> master
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%
@@ -142,4 +215,10 @@
 
 (send *board-1-canvas* focus)
 
+<<<<<<< HEAD
 (provide (all-defined-out))
+=======
+(provide (all-defined-out))
+=======
+>>>>>>> origin/master
+>>>>>>> master

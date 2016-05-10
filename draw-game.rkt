@@ -65,9 +65,9 @@
         (cur-block-b2 (send *board-2* get-cur-block))
         (block-color-b2 (send (send *board-2* get-cur-block) get-color-name)))
     (draw-board canvas dc *board-1* 500 100)
-    (draw-board canvas dc *board-2* 100 100)
+    ;(draw-board canvas dc *board-2* 100 100)
     (draw-block canvas dc (send cur-block-b1 get-place) block-color-b1 500 100)
-    (draw-block canvas dc (send cur-block-b2 get-place) block-color-b2 100 100)
+    ;(draw-block canvas dc (send cur-block-b2 get-place) block-color-b2 100 100)
     ))
   ;(send *board-1-canvas* refresh-now))
 
@@ -89,7 +89,7 @@
         (new-block (generate-block board)))
     (cond ((or (occurs-coordinates? next-block-coord occupied-coord) (occurs-coordinates? block-coord bottom))
            (send board remove-cur-block)
-           (send cur-block reset-coord)
+           (send cur-block reset-block)
            (send board insert-block block-color block-coord) ;; sätter in blocket i board.
            (send board queue-block new-block)) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
@@ -117,8 +117,8 @@
        [keyboard-handler (lambda (key-event)
                            (let ((key-code (send key-event get-key-code)))
                              (if (not (equal? key-code 'release))
-                                 (begin (move key-code *board-1*)
-                                        (move key-code *board-2*))
+                                 (begin (move key-code *board-1*))
+                                        ;(move key-code *board-2*))
                                  (void))))]))
 
 (send *game-canvas* focus)
