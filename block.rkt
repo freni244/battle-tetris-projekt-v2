@@ -7,6 +7,7 @@
                 start-coordinates
                 type
                 color) ; färgen är en slumpad siffra mellan 1-7
+                
     (field [place '()]
            [hold '()]
            [rotation 'up])
@@ -22,7 +23,7 @@
             ((= color 5) "orange")
             ((= color 6) "cyan")
             ((= color 7) "magenta")
-            (else "gold")))
+            (else "gold")))      
     
     ;(define/public (generate-block)...
 
