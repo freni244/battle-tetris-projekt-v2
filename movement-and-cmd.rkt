@@ -3,13 +3,21 @@
 (require "board.rkt")
 (require "game-init.rkt")
 
+(define (rotate-cond items) ;Returnerar #t om ingen av coordinaterna i items är utanför spelplanen
+  (if (empty? items)
+      #t
+      (if (and (< (car (car items)) 11) (> (car (car items)) 0) (< (car (cdr (car items))) 21) (> (car (cdr (car items))) 0))
+          (rotate-cond (cdr items))
+          #f)))
+
 ;; Styrning av block (sidledes, ner & rotation). Inget händer om coordinat ej occuperad eller utanför brädet.
 (define (move key-event)
   (let ((cur-block (send *board-1* get-cur-block))
         (occupied-coord (send *board-1* get-occupied-coord))
         (bottom (send *board-1* get-bottom))
         (left-wall (send *board-1* get-left-wall))
-        (right-wall (send *board-1* get-right-wall)))
+        (right-wall (send *board-1* get-right-wall))
+        (board-matrix (send *board-1* get-matrix)))
     (cond
       [(equal? key-event 'left)
        (cond ((or (occurs-coordinates? (send cur-block return-move-direction 'left) occupied-coord) (occurs-coordinates? (send cur-block get-place) left-wall))
@@ -24,10 +32,11 @@
               void)
              (else (send cur-block move-down)))]
       [(equal? key-event #\space)
-       ;(cond ((or (occurs-coordinates? (send cur-block 
-       (send cur-block rotate 'right)]
+       (cond ((and (rotate-cond (send cur-block return-rotate 'right)) (not (occurs-coordinates? (send cur-block return-rotate 'right) occupied-coord)))
+              (send cur-block rotate 'right)))]
       [(equal? key-event 'shift)
-       (send cur-block rotate 'left)]
+       (cond ((and (rotate-cond (send cur-block return-rotate 'left)) (not (occurs-coordinates? (send cur-block return-rotate 'left) occupied-coord)))
+              (send cur-block rotate 'left)))]
        ;(cond ((or (occurs-coordinates? (send cur-block return-rotate 'right) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom)) ;; utöka med vägg osv
        ;       void)
        ;      (else (send cur-block rotate 'right)))]
