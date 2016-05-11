@@ -79,7 +79,8 @@
          (move-coords 1 0 1 0 1 0 1 0))
         ((eq? direction 'left)
          (move-coords -1 0 -1 0 -1 0 -1 0))))
-
+    
+    ;Flyttar blocket vänster eller höger.
     (define/public (move-direction direction)
       (set! coordinates (return-move-direction direction)))
     
@@ -99,6 +100,30 @@
     (define/public (get-rotation)
       rotation)
 
+
+    
+    ;; Ändrar till roterade koordinater
+    (define/public (rotate direction)
+      (set! coordinates (return-rotate direction))
+      (cond ((eq? rotation 'up)
+             (if (eq? direction 'right)
+                 (set! rotation 'right)
+                 (set! rotation 'left)))
+            ((eq? rotation 'right)
+             (if (eq? direction 'right)
+                 (set! rotation 'down)
+                 (set! rotation 'up)))
+            ((eq? rotation 'down)
+             (if (eq? direction 'right)
+                 (set! rotation 'left)
+                 (set! rotation 'right)))
+            ((eq? rotation 'left)
+             (if (eq? direction 'right)
+                 (set! rotation 'up)
+                 (set! rotation 'down)))))
+            
+      
+    
     ;; returnerar roterade koordinater (även set!, men det -> fel då meningen med return-rotate är att även kunna kolla om det går att rotera utan att ändra)
     (define/public (return-rotate direction);Säger hur koordinaterna ska ändras när ett visst block i en viss rotation roteras. ;ser hemskt ut....
       (cond
@@ -106,31 +131,23 @@
          (cond
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
-                   (set! rotation 'right)   ;;;;; kommer bli fel då anropas två gånger om både return-rotate och rotate kallas...
                    (move-coords 2 -2 1 -1 0 0 -1 1))
                   (else
-                   (set! rotation 'left)
                    (move-coords 1 1 0 0 -1 -1 -2 -2))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
-                   (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 -2 -2))
                   (else
-                   (set! rotation 'up)
                    (move-coords -2 2 -1 1 0 0 1 -1))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
-                   (set! rotation 'left)
                    (move-coords -2 2 -1 1 0 0 1 -1))
                   (else
-                   (set! rotation 'right)
                    (move-coords -1 -1 0 0 1 1 2 2))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
-                   (set! rotation 'up)
                    (move-coords -1 -1 0 0 1 1 2 2))
                   (else
-                   (set! rotation 'down)
                    (move-coords 2 -2 1 -1 0 0 -1 1))))
            (else #f)))
 
@@ -138,186 +155,138 @@
          (cond
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
-                   (set! rotation 'right)
                    (move-coords 1 -1 0 0 -1 1 -2 0))
                   (else
-                   (set! rotation 'left)
                    (move-coords 1 1 0 0 -1 -1 0 -2))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
-                   (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 0 -2))
                   (else
-                   (set! rotation 'up)
                    (move-coords -1 1 0 0 1 -1 2 0))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
-                   (set! rotation 'left)
                    (move-coords -1 1 0 0 1 -1 2 0))
                   (else
-                   (set! rotation 'right)
                    (move-coords -1 -1 0 0 1 1 0 2))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
-                   (set! rotation 'up)
                    (move-coords -1 -1 0 0 1 1 0 2))
                   (else
-                   (set! rotation 'down)
                    (move-coords 1 -1 0 0 -1 1 -2 0))))
            (else #f)))
         ((eq? type 'L)
          (cond
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
-                   (set! rotation 'right)
                    (move-coords 1 -1 0 0 -1 1 0 -2)) 
                   (else
-                   (set! rotation 'left)
                    (move-coords 1 1 0 0 -1 -1 2 0))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
-                   (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 2 0))
                   (else
-                   (set! rotation 'up)
                    (move-coords -1 1 0 0 1 -1 0 2))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
-                   (set! rotation 'left)
                    (move-coords -1 1 0 0 1 -1 0 2))
                   (else
-                   (set! rotation 'right)
                    (move-coords -1 -1 0 0 1 1 -2 0))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
-                   (set! rotation 'up)
                    (move-coords -1 -1 0 0 1 1 -2 0))
                   (else
-                   (set! rotation 'down)
                    (move-coords 1 -1 0 0 -1 1 0 -2))))
            (else #f)))
         ((eq? type 'O)
          (cond
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
-                   (set! rotation 'right)
                    (move-coords 1 0 0 1 0 -1 -1 0))
                   (else
-                   (set! rotation 'left)
                    (move-coords 0 1 -1 0 1 0 0 -1))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
-                   (set! rotation 'down)
                    (move-coords 0 1 -1 0 1 0 0 -1))
                   (else
-                   (set! rotation 'up)
                    (move-coords -1 0 0 -1 0 1 1 0))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
-                   (set! rotation 'left)
                    (move-coords -1 0 0 -1 0 1 1 0))
                   (else
-                   (set! rotation 'right)
                    (move-coords  0 -1 1 0 -1 0 0 1))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
-                   (set! rotation 'up)
                    (move-coords 0 -1 1 0 -1 0 0 1))
                   (else
-                   (set! rotation 'down)
                    (move-coords 1 0 0 1 0 -1 -1 0))))
            (else #f)))
         ((eq? type 'S)
          (cond
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
-                   (set! rotation 'right)
                    (move-coords 0 0 -1 1 0 -2 -1 -1))
                   (else
-                   (set! rotation 'left)
                    (move-coords 0 0 -1 -1 2 0 1 -1))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
-                   (set! rotation 'down)
                    (move-coords 0 0 -1 -1 2 0 1 -1))
                   (else
-                   (set! rotation 'up)
                    (move-coords 0 0  1 -1 0 2 1 1))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
-                   (set! rotation 'left)
                    (move-coords 0 0  1 -1 0 2 1 1))
                   (else
-                   (set! rotation 'right)
                    (move-coords 0 0 1 1 -2 0 -1 1))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
-                   (set! rotation 'up)
                    (move-coords 0 0 1 1 -2 0 -1 1))
                   (else
-                   (set! rotation 'down)
                    (move-coords 0 0 -1 1 0 -2 -1 -1))))
            (else #f)))
         ((eq? type 'T)
          (cond
            ((eq? rotation 'up)
             (cond ((eq? direction 'right)
-                   (set! rotation 'right)
                    (move-coords 1 -1 0 0 -1 1 -1 -1))
                   (else
-                   (set! rotation 'left)
                    (move-coords 1 1 0 0 -1 -1 1 -1))))
            ((eq? rotation 'right)
             (cond ((eq? direction 'right)
-                   (set! rotation 'down)
                    (move-coords 1 1 0 0 -1 -1 1 -1))
                   (else
-                   (set! rotation 'up)
                    (move-coords -1 1 0 0 1 -1 1 1))))
            ((eq? rotation 'down)
             (cond ((eq? direction 'right)
-                   (set! rotation 'left)
                    (move-coords -1 1 0 0 1 -1 1 1))
                   (else
-                   (set! rotation 'right)
                    (move-coords -1 -1 0 0 1 1 -1 1))))
            ((eq? rotation 'left)
             (cond ((eq? direction 'right)
-                   (set! rotation 'up)
                    (move-coords -1 -1 0 0 1 1 -1 1))
                   (else
-                   (set! rotation 'down)
                    (move-coords 1 -1 0 0 -1 1 -1 -1))))
            (else #f)))
          ((eq? type 'Z)
           (cond
             ((eq? rotation 'up)
              (cond ((eq? direction 'right)
-                    (set! rotation 'right)
                     (move-coords 1 -1 0 0 -1 -1 -2 0))
                    (else
-                    (set! rotation 'left)
                     (move-coords 1 1 0 0 1 -1 0 -2))))
             ((eq? rotation 'right)
              (cond ((eq? direction 'right)
-                    (set! rotation 'down)
                     (move-coords 1 1 0 0 1 -1 0 -2))
                    (else
-                    (set! rotation 'up)
                     (move-coords -1 1 0 0 1 1 2 0))))
             ((eq? rotation 'down)
              (cond ((eq? direction 'right)
-                    (set! rotation 'left)
                     (move-coords -1 1 0 0 1 1 2 0))
                    (else
-                    (set! rotation 'right)
                     (move-coords -1 -1 0 0 -1 1 0 2))))
             ((eq? rotation 'left)
              (cond ((eq? direction 'right)
-                    (set! rotation 'up)
                     (move-coords -1 -1 0 0 -1 1 0 2))
                    (else
-                    (set! rotation 'down)
                     (move-coords 1 -1 0 0 -1 -1 -2 0))))
             (else #f)))
          (else
@@ -325,9 +294,6 @@
          ))
 
 
-    ;; Ändrar till roterade koordinater
-    (define/public (rotate direction)
-      (set! coordinates (return-rotate direction)))
     
     (define/public (get-place);Ska returnera koordinaterna som par i en lista
       coordinates)

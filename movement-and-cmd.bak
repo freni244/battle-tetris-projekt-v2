@@ -24,7 +24,6 @@
               void)
              (else (send cur-block move-down)))]
       [(equal? key-event #\space)
-       ;(cond ((or (occurs-coordinates? (send cur-block 
        (send cur-block rotate 'right)]
       [(equal? key-event 'shift)
        (send cur-block rotate 'left)]
