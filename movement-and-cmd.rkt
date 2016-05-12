@@ -10,6 +10,7 @@
           (rotate-cond (cdr items))
           #f)))
 
+
 ;; Styrning av block (sidledes, ner & rotation). Inget händer om coordinat ej occuperad eller utanför brädet.
 (define (move key-event)
   (let ((cur-block (send *board-1* get-cur-block))
@@ -18,6 +19,13 @@
         (left-wall (send *board-1* get-left-wall))
         (right-wall (send *board-1* get-right-wall))
         (board-matrix (send *board-1* get-matrix)))
+    
+    (define (move-to-bot);Hjälpfunktion till key-event 'control.
+      (if (or (occurs-coordinates? (send cur-block return-move-down) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom))
+          void
+          (begin (send cur-block move-down)
+                 (move-to-bot))))
+    
     (cond
       [(equal? key-event 'left) ;Flytta block vänster
        (cond ((or (occurs-coordinates? (send cur-block return-move-direction 'left) occupied-coord) (occurs-coordinates? (send cur-block get-place) left-wall))
@@ -37,6 +45,8 @@
       [(equal? key-event 'shift);Rotera block vänster
        (cond ((and (rotate-cond (send cur-block return-rotate 'left)) (not (occurs-coordinates? (send cur-block return-rotate 'left) occupied-coord)))
               (send cur-block rotate 'left)))]
+      [(equal? key-event 'control);Skickar ned ett block så långt som möjligt
+       (move-to-bot)]
       )))
 
 (define (occurs? el list)
