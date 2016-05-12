@@ -19,28 +19,24 @@
         (right-wall (send *board-1* get-right-wall))
         (board-matrix (send *board-1* get-matrix)))
     (cond
-      [(equal? key-event 'left)
+      [(equal? key-event 'left) ;Flytta block vänster
        (cond ((or (occurs-coordinates? (send cur-block return-move-direction 'left) occupied-coord) (occurs-coordinates? (send cur-block get-place) left-wall))
               void)
              (else (send cur-block move-direction 'left)))]
-      [(equal? key-event 'right)
+      [(equal? key-event 'right);Flytta block höger
        (cond ((or (occurs-coordinates? (send cur-block return-move-direction 'right) occupied-coord) (occurs-coordinates? (send cur-block get-place) right-wall))
               void)
              (else (send cur-block move-direction 'right)))]
-      [(equal? key-event 'down)
+      [(equal? key-event 'down);Flytta block nedåt
        (cond ((or (occurs-coordinates? (send cur-block return-move-down) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom))
               void)
              (else (send cur-block move-down)))]
-      [(equal? key-event #\space)
+      [(equal? key-event #\space);Rotera block höger
        (cond ((and (rotate-cond (send cur-block return-rotate 'right)) (not (occurs-coordinates? (send cur-block return-rotate 'right) occupied-coord)))
               (send cur-block rotate 'right)))]
-      [(equal? key-event 'shift)
+      [(equal? key-event 'shift);Rotera block vänster
        (cond ((and (rotate-cond (send cur-block return-rotate 'left)) (not (occurs-coordinates? (send cur-block return-rotate 'left) occupied-coord)))
               (send cur-block rotate 'left)))]
-       ;(cond ((or (occurs-coordinates? (send cur-block return-rotate 'right) occupied-coord) (occurs-coordinates? (send cur-block get-place) bottom)) ;; utöka med vägg osv
-       ;       void)
-       ;      (else (send cur-block rotate 'right)))]
-      
       )))
 
 (define (occurs? el list)
