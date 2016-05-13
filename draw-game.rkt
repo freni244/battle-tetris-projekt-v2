@@ -19,6 +19,7 @@
   (send dc set-pen "black" 2 'solid)
   (send dc draw-rectangle x y width height))
 
+;; Ritar spelbrädet. Inargument: board (spelbräde som objekt), x, y (spelbrädets koordinater), canvas, dc.
 (define (draw-board canvas dc board x y) ;; hämtar och ritar board från game-init
   (draw-board-help canvas dc x y (send board get-matrix)))
 
@@ -42,7 +43,7 @@
 ;  (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
 ;    (car (shuffle color-list))))
 
-;; Ritar block givet lista av blockets koordinater (tex (send *I* get-place)).
+;; Ritar block givet lista av blockets koordinater. Inargument: canvas, dc, block (blockets koordinater i lista), color (nummer), x, y.
 (define (draw-block canvas dc block color x y)
   (let ((part1 (first block))
         (part2 (second block))
@@ -69,16 +70,16 @@
     (draw-block canvas dc (send cur-block-b1 get-place) block-color-b1 500 100)
     ;(draw-block canvas dc (send cur-block-b2 get-place) block-color-b2 100 100)
     ))
-  ;(send *board-1-canvas* refresh-now))
 
 (define (refresh-draw-cycle)
   (send *game-canvas* refresh-now))
 
+;; Genererar ett random block utav alla typer som finns i board.
 (define (generate-block board)
   (let ((blocks (send board get-all-types)))
     (car (shuffle blocks))))
 
-;;;;;;;;; board istället för *board-1*...
+;; Får block att falla i givet spelbräde.
 (define (draw-fall board)
   (let ((cur-block (send board get-cur-block))
         (block-color (send (send board get-cur-block) get-color-num))
@@ -93,14 +94,6 @@
            (send board insert-block block-color block-coord) ;; sätter in blocket i board.
            (send board queue-block new-block)) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
-
-;(define *draw-timer* (new timer%
-;                     [notify-callback refresh-draw-cycle]))
-;(send *draw-timer* start 16 #f) ;; aktiveras i main...
-;
-;(define *fall-timer* (new timer%
-;                     [notify-callback draw-fall]))
-;(send *fall-timer* start 300 #f)
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%

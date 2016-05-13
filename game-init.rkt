@@ -37,19 +37,20 @@
        [type 'S]
        [color 5]))
 
-(define *T*
-  (new block%
-       [coordinates '((4 1) (5 1) (6 1) (5 2))]
-       [start-coordinates '((4 1) (5 1) (6 1) (5 2))]
-       [type 'T]
-       [color 7])) ;6
-
 (define *Z*
   (new block%
        [coordinates '((4 1) (5 1) (5 2) (6 2))]
        [start-coordinates '((4 1) (5 1) (5 2) (6 2))]
        [type 'Z]
-       [color 6])) ;7
+       [color 6]))
+
+(define *T*
+  (new block%
+       [coordinates '((4 1) (5 1) (6 1) (5 2))]
+       [start-coordinates '((4 1) (5 1) (6 1) (5 2))]
+       [type 'T]
+       [color 7]))
+
 
 (define *board-1*
   (new board%
@@ -77,7 +78,8 @@
        [right-key 'right]
        [down-key 'down]
        [rotate-right-key #\space]
-       [rotate-left-key #\m]))
+       [rotate-left-key #\m]
+       [drop-key #\n]))
 
 (define *board-2*
   (new board%
@@ -105,8 +107,10 @@
        [right-key #\d]
        [down-key #\s]
        [rotate-right-key #\e]
-       [rotate-left-key #\q]))
+       [rotate-left-key #\q]
+       [drop-key #\r]))
 
+;; Returnerar färg från nummer. Här bestäms vilken färg varje nummer ska ha.
 (define (return-color-from-num num)
   (cond ((= num 1) "lime")
         ((= num 2) "blue")
@@ -115,7 +119,7 @@
         ((= num 5) "orange")
         ((= num 6) "cyan")
         ((= num 7) "magenta")
-        (else "white"))) ;; beroende på vilken bakgrundsfärgen ska vara "DodgerBlue"
+        (else "white"))) ;; beroende på vilken bakgrundsfärgen ska vara. "DodgerBlue"
 
 ;; Lägger till alla typer av block (som objekt) i *board-1*.
 (send *board-1* add-all-types *I*)
@@ -127,11 +131,6 @@
 (send *board-1* add-all-types *Z*)
 
 (send *board-1* queue-block *I*)  ;; egentligen inte här som vi kommer att sätta in block på kö
-;(send *board-1* queue-block *J*)
-;(send *board-1* queue-block *O*)
-;(send *board-1* queue-block *S*)
-;(send *board-1* queue-block *T*)
-;(send *board-1* queue-block *Z*)
 
 (send *board-2* queue-block *I*)
 

@@ -8,22 +8,20 @@
                 right-key
                 down-key
                 rotate-right-key
-                rotate-left-key)
+                rotate-left-key
+                drop-key)
     (field [next-blocks '()]
            [hold '()]
            [all-types '()])
 
+    ;; Returnerar knappar
     (define/public (get-matrix) matrix)
-
     (define/public (get-left-key) left-key)
-    
     (define/public (get-right-key) right-key)
-
     (define/public (get-down-key) down-key)
-
     (define/public (get-rotate-right-key) rotate-right-key)
-
     (define/public (get-rotate-left-key) rotate-left-key)
+    (define/public (get-drop-key) drop-key)
     
     (define/public (get-bottom)
       '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
@@ -76,7 +74,7 @@
         (ins-to-list new-row y-pos matrix)))
     
     ;; Infogar ett blocks coordinater och färg/powerup (dvs nummer) 
-    (define/public (insert-block block-color block-coord) ;; två variabler verkar inte funka vid "send"...
+    (define/public (insert-block block-color block-coord)
       (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
             (part2 (second block-coord))
             (part3 (third block-coord))
@@ -133,7 +131,6 @@
                 (else (count-to-row (cdr board) (- y 1)))))
         (count-to-row matrix y))
 
-    ;;;;;;;;;;;; ersätter remove-row?...
       ;; Tar bort rad y och flyttar ner allt över.
       (define/public (collapse-from y)
         (define (build-matrix y new-matrix)
@@ -172,7 +169,7 @@
       (define (make-coord-list y board coord-list)
         (cond ((null? board) coord-list)
               ((not (row-of-zeros? (car board)))
-               (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list))) ;;;* (vid append (- y 1) löser bara om den kommer ovanifrån...)
+               (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list)))
               (else (make-coord-list (+ y 1) (cdr board) coord-list))))
       (make-coord-list 1 matrix '()))
     

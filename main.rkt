@@ -18,7 +18,7 @@
            (send *board-1* collapse-from full-row-pos)]
           [else void])))
 
-;;; Vet inte om vi ska ha de här eller i draw...
+
 (define *draw-timer* (new timer%
                      [notify-callback refresh-draw-cycle]))
 
@@ -36,7 +36,7 @@
 (define (play-game)
   (send *window* show #t)
   (send *draw-timer* start 16 #f)
-  (send *fall-timer-b1* start 300 #f)
-  ;(send *fall-timer-b2* start 300 #f) 
+  (send *fall-timer-b1* start 300 #f) ;; startar board-1
+  ;(send *fall-timer-b2* start 300 #f) ;; startar board-2
   (send *condition-timer* start 16 #f)
   )
