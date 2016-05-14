@@ -12,7 +12,6 @@
                      [height 600]
                      [x 0]	 
                      [y 0]))
-;(send *window* show #t)
 
 (define (draw-grid canvas dc x y width height color)
   (send dc set-brush color 'solid)
@@ -23,6 +22,7 @@
 (define (draw-board canvas dc board x y) ;; hämtar och ritar board från game-init
   (draw-board-help canvas dc x y (send board get-matrix)))
 
+;; Hjälpfunktion till draw-board. Items är en matris av listor.
 (define (draw-board-help canvas dc x y items)
   (cond
     ((empty? (cdr items))
@@ -30,6 +30,7 @@
     (else (begin (draw-lines canvas dc (car items) x y)
                  (draw-board-help canvas dc x (+ 20 y) (cdr items))))))
 
+;; Ritar rader. Items är en lista med nummer. Ett nummer motsvarar en färg.
 (define (draw-lines canvas dc items x y)
   (let ((color (return-color-from-num (car items))))
     (cond
@@ -39,21 +40,13 @@
        (begin (draw-grid canvas dc x y 20 20 color)
               (draw-lines canvas dc (cdr items) (+ x 20) y))))))
 
-;(define (random-color)
-;  (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
-;    (car (shuffle color-list))))
-
-;; Ritar block givet lista av blockets koordinater. Inargument: canvas, dc, block (blockets koordinater i lista), color (nummer), x, y.
+;; Ritar block givet lista av blockets koordinater. Inargument: canvas, dc, block, color (nummer), x, y.
 (define (draw-block canvas dc block color x y)
-  (let ((part1 (first block))
-        (part2 (second block))
-        (part3 (third block))
-        (part4 (fourth block)))
     (send dc set-brush color 'solid)
-    (send dc draw-rectangle (+ x (* (- (car part1) 1) 20)) (+ y (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
-    (send dc draw-rectangle (+ x (* (- (car part2) 1) 20)) (+ y (* (- (cadr part2) 1) 20)) 20 20) ;; koordinaterna multipliceras med 20 så att det motsvarar
-    (send dc draw-rectangle (+ x (* (- (car part3) 1) 20)) (+ y (* (- (cadr part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
-    (send dc draw-rectangle (+ x (* (- (car part4) 1) 20)) (+ y (* (- (cadr part4) 1) 20)) 20 20)))
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part1) 1) 20)) (+ y (* (- (send block get-y-part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part2) 1) 20)) (+ y (* (- (send block get-y-part2) 1) 20)) 20 20) ;; koordinaterna multipliceras med 20 så att det motsvarar
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part3) 1) 20)) (+ y (* (- (send block get-y-part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part4) 1) 20)) (+ y (* (- (send block get-y-part4) 1) 20)) 20 20))
 
 ;; tillfälligt... 
 (define (draw-text canvas dc)
@@ -66,9 +59,9 @@
         (cur-block-b2 (send *board-2* get-cur-block))
         (block-color-b2 (send (send *board-2* get-cur-block) get-color-name)))
     (draw-board canvas dc *board-1* 500 100)
-    ;(draw-board canvas dc *board-2* 100 100)
-    (draw-block canvas dc (send cur-block-b1 get-place) block-color-b1 500 100)
-    ;(draw-block canvas dc (send cur-block-b2 get-place) block-color-b2 100 100)
+    (draw-board canvas dc *board-2* 100 100)
+    (draw-block canvas dc cur-block-b1 block-color-b1 500 100)       ;(draw-block canvas dc (send cur-block-b1 get-place) block-color-b1 500 100)
+    (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
     ))
 
 (define (refresh-draw-cycle)
@@ -89,9 +82,9 @@
         (bottom (send board get-bottom))
         (new-block (generate-block board)))
     (cond ((or (occurs-coordinates? next-block-coord occupied-coord) (occurs-coordinates? block-coord bottom))
-           (send board remove-cur-block)
+           (send board insert-block block-color cur-block) ;; sätter in blocket i board.
            (send cur-block reset-block)
-           (send board insert-block block-color block-coord) ;; sätter in blocket i board.
+           (send board remove-cur-block)
            (send board queue-block new-block)) ;; lägger ett block på kö
           (else (send cur-block move-down)))))
 
@@ -110,8 +103,8 @@
        [keyboard-handler (lambda (key-event)
                            (let ((key-code (send key-event get-key-code)))
                              (if (not (equal? key-code 'release))
-                                 (begin (move key-code *board-1*))
-                                        ;(move key-code *board-2*))
+                                 (begin (move key-code *board-1*) ;; skickar knapptryckning till move i "movement-and-cmd.rkt"
+                                        (move key-code *board-2*))
                                  (void))))]))
 
 (send *game-canvas* focus)

@@ -1,5 +1,6 @@
 #lang racket
 (provide board%)
+(require "block.rkt")
 
 (define board%
   (class object%
@@ -68,32 +69,25 @@
             (else (select-n (- n 1) (cdr list)))))
     
     ;; Infogar nummer till matris.
-    ;; Inargument: infogat nummer "num", koordinater "x-pos, y-pos", matrix
+    ;; Inargument: nummer "num", koordinater "x-pos, y-pos", matrix
     (define/public (ins-to-matrix num x-pos y-pos matrix)
-      (let ((new-row (ins-to-list num x-pos (select-n y-pos matrix)))) ;; number inserted to row
+      (let ((new-row (ins-to-list num x-pos (select-n y-pos matrix))))
         (ins-to-list new-row y-pos matrix)))
-    
-    ;; Infogar ett blocks coordinater och färg/powerup (dvs nummer) 
-    (define/public (insert-block block-color block-coord)
-      (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
-            (part2 (second block-coord))
-            (part3 (third block-coord))
-            (part4 (fourth block-coord)))
-        (ins-to-matrix block-color (car part1) (cadr part1) matrix)
-        (ins-to-matrix block-color (car part2) (cadr part2) matrix)
-        (ins-to-matrix block-color (car part3) (cadr part3) matrix)
-        (ins-to-matrix block-color (car part4) (cadr part4) matrix)))
 
-    ;; Tar bort block. Sätter nollor vid blockets coordinater. Inargument: blockets coordinater
-    (define/public (remove-block block-coord)
-      (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
-            (part2 (second block-coord))
-            (part3 (third block-coord))
-            (part4 (fourth block-coord)))
-        (ins-to-matrix 0 (car part1) (cadr part1) matrix)
-        (ins-to-matrix 0 (car part2) (cadr part2) matrix)
-        (ins-to-matrix 0 (car part3) (cadr part3) matrix)
-        (ins-to-matrix 0 (car part4) (cadr part4) matrix)))
+    ;;;;;;; insert blir fel. Se även draw fall.
+    ;; Infogar ett blocks coordinater och färg/powerup (dvs nummer) 
+    (define/public (insert-block block-color block)
+      (ins-to-matrix block-color (send block get-x-part1) (send block get-y-part1) matrix)
+      (ins-to-matrix block-color (send block get-x-part2) (send block get-y-part2) matrix)
+      (ins-to-matrix block-color (send block get-x-part3) (send block get-y-part3) matrix)
+      (ins-to-matrix block-color (send block get-x-part4) (send block get-y-part4) matrix))
+
+;    ;; Tar bort block. Sätter nollor vid blockets coordinater. Inargument: blockets coordinater
+;    (define/public (remove-block block)
+;      (ins-to-matrix 0 (send block get-x-part1) (send block get-y-part1) matrix)
+;      (ins-to-matrix 0 (send block get-x-part2) (send block get-y-part2) matrix)
+;      (ins-to-matrix 0 (send block get-x-part3) (send block get-y-part3) matrix)
+;      (ins-to-matrix 0 (send block get-x-part4) (send block get-y-part4) matrix))
 
       
 ;    (define (random-from-to n m)

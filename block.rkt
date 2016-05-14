@@ -12,6 +12,16 @@
            [rotation 'up]
            [start-rotation 'up])
 
+    ;; Returnerar x-/y-koordinater för blockets olika delar (1-4) ur coordinates.
+    (define/public (get-x-part1) (caar coordinates))
+    (define/public (get-y-part1) (cadar coordinates))
+    (define/public (get-x-part2) (caadr coordinates))
+    (define/public (get-y-part2) (cadr (cadr coordinates)))
+    (define/public (get-x-part3) (caaddr coordinates))
+    (define/public (get-y-part3) (cadr (caddr coordinates)))
+    (define/public (get-x-part4) (car (cadddr coordinates)))
+    (define/public (get-y-part4) (cadr (cadddr coordinates)))
+    
     (define/public (get-color-num) color) ;; returns color as number
 
     (define/public (get-color-name) ;; returns name of color
@@ -22,7 +32,7 @@
             ((= color 5) "orange")
             ((= color 6) "cyan")
             ((= color 7) "magenta")
-            (else "gold")))      
+            (else "gold")))
     
     ;(define/public (generate-block)...
 

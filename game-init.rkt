@@ -110,7 +110,7 @@
        [rotate-left-key #\q]
        [drop-key #\r]))
 
-;; Returnerar färg från nummer. Här bestäms vilken färg varje nummer ska ha.
+;; Returnerar färg från nummer.
 (define (return-color-from-num num)
   (cond ((= num 1) "lime")
         ((= num 2) "blue")
