@@ -13,8 +13,21 @@
                 drop-key)
     (field [next-blocks '()]
            [hold '()]
-           [all-types '()])
+           [all-types '()]
+           [score 0]
+           [in-game #t])
 
+    (define/public (get-score) score)
+
+    (define/public (add-point point)
+      (set! score (+ score point)))
+
+    (define/public (in-game?) in-game) ;; Returnerar #t om spelbrädet är i spel, annars #f.
+
+    (define/public (lose)
+      (set! in-game #f))
+
+    
     ;; Returnerar knappar
     (define/public (get-matrix) matrix)
     (define/public (get-left-key) left-key)

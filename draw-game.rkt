@@ -1,6 +1,4 @@
 #lang racket/gui
-;(provide *draw-timer*)
-;(provide *fall-timer*)
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
@@ -48,9 +46,34 @@
     (send dc draw-rectangle (+ x (* (- (send block get-x-part3) 1) 20)) (+ y (* (- (send block get-y-part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
     (send dc draw-rectangle (+ x (* (- (send block get-x-part4) 1) 20)) (+ y (* (- (send block get-y-part4) 1) 20)) 20 20))
 
-;; tillfälligt... 
+;;  
 (define (draw-text canvas dc)
-  (send dc draw-text "You lose!" 180 75))
+  (cond ((not (send *board-1* in-game?))  ;; om spelplan-1 inte är "in-game"
+         (send dc set-font (make-font #:size 40 #:family 'roman
+                                      #:weight 'bold))
+         (send dc set-text-foreground "red")
+         (send dc draw-text "You lose!" 520 50)
+         (send dc set-text-foreground "blue")
+         (send dc draw-text "You won!" 120 50)
+         )
+        ((not (send *board-2* in-game?))  ;; om spelplan-1 inte är "in-game"
+         (send dc set-font (make-font #:size 40 #:family 'roman
+                                      #:weight 'bold))
+         (send dc set-text-foreground "red")
+         (send dc draw-text "You lose!" 120 50)
+         (send dc set-text-foreground "blue")
+         (send dc draw-text "You won!" 520 50)
+         )
+        (else void)))
+
+(define (draw-score canvas dc b1-score b2-score)
+  (let ((b1-score-text (string-join (append '("Score: ") (list b1-score))))
+        (b2-score-text (string-join (append '("Score: ") (list b2-score)))))
+    (send dc set-font (make-font #:size 20 #:family 'roman
+                                 #:weight 'bold))
+    (send dc set-text-foreground "black")
+    (send dc draw-text b1-score-text 500 500)
+    (send dc draw-text b2-score-text 100 500)))
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
@@ -62,6 +85,8 @@
     (draw-board canvas dc *board-2* 100 100)
     (draw-block canvas dc cur-block-b1 block-color-b1 500 100)       ;(draw-block canvas dc (send cur-block-b1 get-place) block-color-b1 500 100)
     (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
+    (draw-text canvas dc)
+    (draw-score canvas dc (number->string (send *board-1* get-score)) (number->string (send *board-2* get-score)))
     ))
 
 (define (refresh-draw-cycle)
@@ -85,16 +110,17 @@
            (send board insert-block block-color cur-block) ;; sätter in blocket i board.
            (send cur-block reset-block)
            (send board remove-cur-block)
-           (send board queue-block new-block)) ;; lägger ett block på kö
+           (send board queue-block new-block) ;; lägger ett block på kö
+           (send board add-point 1))  ;; ge ett poäng
           (else (send cur-block move-down)))))
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%
   (class canvas%
-       (init-field keyboard-handler)
-       (define/override (on-char key-event)
-         (keyboard-handler key-event))
-       (super-new)))
+    (init-field keyboard-handler)
+    (define/override (on-char key-event)
+      (keyboard-handler key-event))
+    (super-new)))
 
 (define *game-canvas*
   (new input-canvas%
@@ -103,10 +129,12 @@
        [keyboard-handler (lambda (key-event)
                            (let ((key-code (send key-event get-key-code)))
                              (if (not (equal? key-code 'release))
-                                 (begin (move key-code *board-1*) ;; skickar knapptryckning till move i "movement-and-cmd.rkt"
+                                 (begin (move key-code *board-1*)
                                         (move key-code *board-2*))
                                  (void))))]))
-
-(send *game-canvas* focus)
+;;;; På "key down" lägg till tangenter i lista. Key up ta bort. Fortsätt med key-event så länge key ligger i listan. (inte använda equal?... "key=?"?)
+;;;; on-key,  on-release
+                                 
+(send *game-canvas* focus) ;; gör att tangentbordshändelser har "fokus" på *game-canvas*
 
 (provide (all-defined-out))

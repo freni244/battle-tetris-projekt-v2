@@ -179,9 +179,9 @@
 (send *board-1* add-all-types *T-b1*)
 (send *board-1* add-all-types *Z-b1*)
 
-(send *board-1* queue-block *I-b1*)  ;; egentligen inte här som vi kommer att sätta in block på kö
+;(send *board-1* queue-block *I-b1*)  ;; egentligen inte här som vi kommer att sätta in block på kö
 
-(send *board-2* queue-block *I-b2*)
+;(send *board-2* queue-block *I-b2*)
 
 (send *board-2* add-all-types *I-b2*)
 (send *board-2* add-all-types *J-b2*)
