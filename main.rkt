@@ -56,12 +56,60 @@
 (define *condition-timer* (new timer%
                                [notify-callback conditions]))
 
-(define (play-game)
-  (send *board-1* queue-block (generate-block *board-1*))
-  (send *board-2* queue-block (generate-block *board-2*))
-  (send *window* show #t)
-  (send *draw-timer* start 16 #f)
-  (send *fall-timer-b1* start 300 #f) ;; startar board-1
-  (send *fall-timer-b2* start 300 #f) ;; startar board-2
-  (send *condition-timer* start 16 #f)
-  )
+(send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
+(send *board-2* queue-block (generate-block *board-2*))
+(send *window* show #t)
+
+(define (button-hanler button-press)
+  (cond ((equal? button-press "Play multiplayer")
+         (send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+         (send *horizontal-bottom* delete-child play-singel-button)
+         (send *draw-timer* start 16 #f)
+         (send *condition-timer* start 16 #f)
+         (send *fall-timer-b1* start 300 #f) ;; startar bara timer hos board-1 och -2
+         (send *fall-timer-b2* start 300 #f))
+        ((equal? button-press "Play singelplayer")
+         (send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+         (send *horizontal-bottom* delete-child play-singel-button)
+         (send *board-1* play-singelplayer)
+         (send *draw-timer* start 16 #f)
+         (send *condition-timer* start 16 #f)         
+         (send *fall-timer-b1* start 300 #f))
+        ((equal? button-press "QUIT")
+         (send *window* show #f))
+        (else (void))))
+
+;; Skapar knapp som vid klick skickar sin lable till play-game.
+(define (make-button panel button-label)
+  (new button%
+       [parent panel]
+       [label button-label]
+       [callback (lambda (button event)
+                   (button-hanler (send button get-label)))]
+       [font (make-font #:size 20 #:family 'roman #:weight 'bold)]
+       ))
+
+;(define *horizontal-center*
+;  (new horizontal-panel%
+;       [parent *window*]
+;       [alignment '(center center)]
+;       [style '(border)]))
+;
+(define *horizontal-bottom*
+  (new horizontal-panel%
+       [parent *window*]
+       [alignment '(center bottom)]
+       [min-height 0]
+       [style '(border)]
+       [border 0]
+       [spacing 10]
+       ))
+
+(define play-multi-button
+  (make-button *horizontal-bottom* "Play multiplayer"))
+
+(define play-singel-button
+  (make-button *horizontal-bottom* "Play singelplayer"))
+
+(define quit-button
+  (make-button *horizontal-bottom* "QUIT"))

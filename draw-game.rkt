@@ -5,9 +5,9 @@
 (require "movement-and-cmd.rkt")
 
 (define *window* (new frame%
-                     [label "window"]
+                     [label "Battle Tetris"]
                      [width 900]
-                     [height 600]
+                     [height 600] ;600]
                      [x 0]	 
                      [y 0]))
 
@@ -46,48 +46,56 @@
     (send dc draw-rectangle (+ x (* (- (send block get-x-part3) 1) 20)) (+ y (* (- (send block get-y-part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
     (send dc draw-rectangle (+ x (* (- (send block get-x-part4) 1) 20)) (+ y (* (- (send block get-y-part4) 1) 20)) 20 20))
 
-;;  
-(define (draw-text canvas dc)
-  (cond ((not (send *board-1* in-game?))  ;; om spelplan-1 inte är "in-game"
-         (send dc set-font (make-font #:size 40 #:family 'roman
-                                      #:weight 'bold))
+;; Om någon förlorar visas text på vinnare/förlorare.
+(define (draw-winner-text canvas dc)
+  (cond ((send *board-1* lost-game?)  ;; om spelplan-1 inte är "in-game"
+         (send dc set-font (make-font #:size 40 #:family 'roman #:weight 'bold))
          (send dc set-text-foreground "red")
          (send dc draw-text "You lose!" 520 50)
          (send dc set-text-foreground "blue")
-         (send dc draw-text "You won!" 120 50)
-         )
-        ((not (send *board-2* in-game?))  ;; om spelplan-1 inte är "in-game"
-         (send dc set-font (make-font #:size 40 #:family 'roman
-                                      #:weight 'bold))
+         (send dc draw-text "You won!" 120 50))
+        ((send *board-2* lost-game?)  ;; om spelplan-1 inte är "in-game"
+         (send dc set-font (make-font #:size 40 #:family 'roman #:weight 'bold))
          (send dc set-text-foreground "red")
          (send dc draw-text "You lose!" 120 50)
          (send dc set-text-foreground "blue")
-         (send dc draw-text "You won!" 520 50)
-         )
+         (send dc draw-text "You won!" 520 50))
         (else void)))
 
-(define (draw-score canvas dc b1-score b2-score)
-  (let ((b1-score-text (string-join (append '("Score: ") (list b1-score))))
-        (b2-score-text (string-join (append '("Score: ") (list b2-score)))))
+;; Visar spelbrädets score
+(define (draw-score canvas dc board-score x y)
+  (let ((score-text (string-join (append '("Score: ") (list board-score)))))
     (send dc set-font (make-font #:size 20 #:family 'roman
                                  #:weight 'bold))
     (send dc set-text-foreground "black")
-    (send dc draw-text b1-score-text 500 500)
-    (send dc draw-text b2-score-text 100 500)))
+    (send dc draw-text score-text x y)))
+
+;; Allt som ska ritas när man spelar på board-1. (spelbräde, block, score)
+(define (show-board-1 canvas dc)
+  (let ((cur-block-b1 (send *board-1* get-cur-block)) ;; "current block board-1"
+        (block-color-b1 (send (send *board-1* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
+    (draw-board canvas dc *board-1* 500 100)
+    (draw-block canvas dc cur-block-b1 block-color-b1 500 100)
+    (draw-score canvas dc (number->string (send *board-1* get-score)) 500 500)))
+
+;; Allt som ska ritas när man spelar på board-2. (spelbräde, block, score)
+(define (show-board-2 canvas dc)
+  (let ((cur-block-b2 (send *board-2* get-cur-block)) ;; "current block board-2"
+        (block-color-b2 (send (send *board-2* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
+    (draw-board canvas dc *board-2* 100 100)
+    (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
+    (draw-score canvas dc (number->string (send *board-2* get-score)) 100 500)))
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
-  (let ((cur-block-b1 (send *board-1* get-cur-block)) ;; "current block board-1"
-        (block-color-b1 (send (send *board-1* get-cur-block) get-color-name)) ;; färgen hos cur-block-b1
-        (cur-block-b2 (send *board-2* get-cur-block))
-        (block-color-b2 (send (send *board-2* get-cur-block) get-color-name)))
-    (draw-board canvas dc *board-1* 500 100)
-    (draw-board canvas dc *board-2* 100 100)
-    (draw-block canvas dc cur-block-b1 block-color-b1 500 100)       ;(draw-block canvas dc (send cur-block-b1 get-place) block-color-b1 500 100)
-    (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
-    (draw-text canvas dc)
-    (draw-score canvas dc (number->string (send *board-1* get-score)) (number->string (send *board-2* get-score)))
-    ))
+  (cond ((send *board-1* singelplayer?)
+         (show-board-1 canvas dc))
+        ((send *board-2* singelplayer?)
+         (show-board-2 canvas dc))
+        (else
+         (show-board-1 canvas dc)
+         (show-board-2 canvas dc)
+         (draw-winner-text canvas dc))))
 
 (define (refresh-draw-cycle)
   (send *game-canvas* refresh-now))
@@ -113,6 +121,8 @@
            (send board queue-block new-block) ;; lägger ett block på kö
            (send board add-point 1))  ;; ge ett poäng
           (else (send cur-block move-down)))))
+
+
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%

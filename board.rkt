@@ -15,17 +15,23 @@
            [hold '()]
            [all-types '()]
            [score 0]
-           [in-game #t])
-
+           [lost-game #f]
+           [singelplayer #f])
+    
     (define/public (get-score) score)
 
     (define/public (add-point point)
       (set! score (+ score point)))
 
-    (define/public (in-game?) in-game) ;; Returnerar #t om spelbrädet är i spel, annars #f.
+    (define/public (lost-game?) lost-game) ;; Returnerar #t spelaren på spelbrädet har förlorat
 
+    (define/public (play-singelplayer)
+      (set! singelplayer #t))
+    
+    (define/public (singelplayer?) singelplayer)
+    
     (define/public (lose)
-      (set! in-game #f))
+      (set! lost-game #t))
 
     
     ;; Returnerar knappar
