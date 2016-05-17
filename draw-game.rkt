@@ -3,6 +3,7 @@
 (require "board.rkt")
 (require "game-init.rkt")
 (require "movement-and-cmd.rkt")
+(require racket/trace)
 
 (define *window* (new frame%
                      [label "Battle Tetris"]
@@ -122,8 +123,6 @@
            (send board add-point 1))  ;; ge ett poäng
           (else (send cur-block move-down)))))
 
-
-
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%
   (class canvas%
@@ -136,14 +135,19 @@
   (new input-canvas%
        [parent *window*]
        [paint-callback draw-cycle]
-       [keyboard-handler (lambda (key-event)
-                           (let ((key-code (send key-event get-key-code)))
+       [keyboard-handler (lambda (key-event) ;; Vid knapptryck skickas vissa key-events till en lista. Är aktiva tills de tas bort vid 'release.
+                           (let ((key-code (send key-event get-key-code))
+                                 (key-code-release (send key-event get-key-release-code)))
                              (if (not (equal? key-code 'release))
-                                 (begin (move key-code *board-1*)
-                                        (move key-code *board-2*))
-                                 (void))))]))
-;;;; På "key down" lägg till tangenter i lista. Key up ta bort. Fortsätt med key-event så länge key ligger i listan. (inte använda equal?... "key=?"?)
-;;;; on-key,  on-release
+                                 (cond ((or (send *board-1* direction-key? key-code) (send *board-2* direction-key? key-code))
+                                        (send *board-1* add-active-key key-code)
+                                        (send *board-2* add-active-key key-code)
+                                        (key-list-to-move (send *board-1* get-active-keys) *board-1*)
+                                        (key-list-to-move (send *board-2* get-active-keys) *board-2*))
+                                       (else (move key-code *board-1*)
+                                             (move key-code *board-2*)))
+                                 (begin (send *board-1* remove-active-key key-code-release)
+                                        (send *board-2* remove-active-key key-code-release)))))]))
                                  
 (send *game-canvas* focus) ;; gör att tangentbordshändelser har "fokus" på *game-canvas*
 

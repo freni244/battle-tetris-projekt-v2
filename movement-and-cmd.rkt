@@ -3,6 +3,16 @@
 (require "board.rkt")
 (require "game-init.rkt")
 
+;; Förekommer element i lista? -> #t #f
+(define (occurs? el list)
+  (not (null? (filter (lambda (x) (equal? x el)) list))))
+
+;; Kollar om samma koordinater finns i två listor med koordinater.
+(define (occurs-coordinates? coord-lst-1 coord-lst-2)
+  (cond ((or (null? coord-lst-1) (null? coord-lst-2)) #f)
+        ((occurs? (car coord-lst-1) coord-lst-2) #t)
+        (else (occurs-coordinates? (cdr coord-lst-1) coord-lst-2))))
+
 (define (rotate-cond items) ;Returnerar #t om ingen av coordinaterna i items är utanför spelplanen
   (if (empty? items)
       #t
@@ -10,7 +20,12 @@
           (rotate-cond (cdr items))
           #f)))
 
-;; Styrning av block (sidledes, ner & rotation) på ett spelbräde. Inget händer om coordinat ej occuperad eller utanför brädet. Inargument: board
+;; Anropar move på varje element i en lista.
+(define (key-list-to-move key-list board)
+  (map (lambda (key) (move key board)) key-list))
+
+;; Styrning av block (sidledes, ner och rotation) på ett spelbräde. Inget händer om coordinaten redan är occuperad eller utanför brädet.
+;; Inargument: key-event och board
 (define (move key-event board)
   (let ((cur-block (send board get-cur-block))
         (occupied-coord (send board get-occupied-coord))
@@ -48,22 +63,7 @@
       [(equal? key-event rotate-left-key) ;; Rotera block vänster
        (cond ((and (rotate-cond (send cur-block return-rotate 'left)) (not (occurs-coordinates? (send cur-block return-rotate 'left) occupied-coord)))
               (send cur-block rotate 'left)))]
-      [(equal? key-event drop-key) ;;;;;;;; lägg till ;;;;;;;;;  ;; Skickar ned ett block så långt som möjligt
-       (move-to-bot)]
-      )))
-
-;      [(equal? key-event #\a)
-;       (cond ((or (occurs-coordinates? (send cur-block-b2 return-move-direction 'left) occupied-coord) (occurs-coordinates? (send cur-block-b2 get-place) left-wall))
-;              void)
-;             (else (send cur-block-b2 move-direction 'left)))]
-
-(define (occurs? el list)
-  (not (null? (filter (lambda (x) (equal? x el)) list))))
-
-;; Kollar om samma koordinater finns i två listor med koordinater.
-(define (occurs-coordinates? coord-lst-1 coord-lst-2)
-  (cond ((or (null? coord-lst-1) (null? coord-lst-2)) #f)
-        ((occurs? (car coord-lst-1) coord-lst-2) #t)
-        (else (occurs-coordinates? (cdr coord-lst-1) coord-lst-2))))
+      [(equal? key-event drop-key) ;; Skickar ned ett block så långt som möjligt
+       (move-to-bot)])))
 
 (provide (all-defined-out))

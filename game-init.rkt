@@ -128,7 +128,8 @@
        [down-key 'down]
        [rotate-right-key #\space]
        [rotate-left-key #\m]
-       [drop-key #\n]))
+       [drop-key #\n]
+       [direction-keys '(left right down)]))
 
 (define *board-2*
   (new board%
@@ -157,7 +158,8 @@
        [down-key #\s]
        [rotate-right-key #\e]
        [rotate-left-key #\q]
-       [drop-key #\r]))
+       [drop-key #\r]
+       [direction-keys '(#\a #\d #\s)]))
 
 ;; Returnerar färg från nummer.
 (define (return-color-from-num num)

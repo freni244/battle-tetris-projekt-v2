@@ -1,50 +1,27 @@
 #lang racket/gui
-<<<<<<< HEAD
-;(provide *draw-timer*)
-;(provide *fall-timer*)
-=======
-<<<<<<< HEAD
->>>>>>> origin/Fredrik-branch
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
 (require "movement-and-cmd.rkt")
-=======
-<<<<<<< HEAD
-(require "block.rkt")
-(require "board.rkt")
-(require "game-init.rkt")
-(require "cmd_store.rkt")
->>>>>>> master
+(require racket/trace)
 
 (define *window* (new frame%
-                     [label "window"]
+                     [label "Battle Tetris"]
                      [width 900]
-                     [height 600]
+                     [height 600] ;600]
                      [x 0]	 
                      [y 0]))
-;(send *window* show #t)
 
 (define (draw-grid canvas dc x y width height color)
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-  (send dc draw-rectangle x y width height)
->>>>>>> origin/Fredrik-branch
   (send dc set-brush color 'solid)
   (send dc set-pen "black" 2 'solid)
   (send dc draw-rectangle x y width height))
 
-(define (draw-board canvas dc) ;; hämtar och ritar board från game-init
-=======
-  (send dc draw-rectangle x y width height) ;; x y width height
-  (send dc set-brush color 'solid)
-  (send dc set-pen "black" 2 'solid))
+;; Ritar spelbrädet. Inargument: board (spelbräde som objekt), x, y (spelbrädets koordinater), canvas, dc.
+(define (draw-board canvas dc board x y) ;; hämtar och ritar board från game-init
+  (draw-board-help canvas dc x y (send board get-matrix)))
 
-(define (draw-board canvas dc) ;; hämta och ritar board från game-init
->>>>>>> master
-  (draw-board-help canvas dc 100 100 (send *board-1* get-matrix)))
-
+;; Hjälpfunktion till draw-board. Items är en matris av listor.
 (define (draw-board-help canvas dc x y items)
   (cond
     ((empty? (cdr items))
@@ -52,173 +29,149 @@
     (else (begin (draw-lines canvas dc (car items) x y)
                  (draw-board-help canvas dc x (+ 20 y) (cdr items))))))
 
+;; Ritar rader. Items är en lista med nummer. Ett nummer motsvarar en färg.
 (define (draw-lines canvas dc items x y)
-  (cond
-    ((empty? (cdr items))
-<<<<<<< HEAD
-     (cond ((= (car items) 0)
-            (draw-grid canvas dc x y 20 20 "white"))
-           ((= (car items) 1)
-<<<<<<< HEAD
-            (draw-grid canvas dc x y 20 20 "lime"))))    ;; tillfällig lösning
-=======
-            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; tillfällig lösning
-=======
-     ;(draw-grid canvas dc x y 20 20 "white"))
-     (cond ((= (car items) 0)
-            (begin (draw-grid canvas dc x y 20 20 "white")))
-           ((= (car items) 1)
-            (begin (draw-grid canvas dc x y 20 20 "lime"))))) ;; behövs fler villkor..? eller bara white
-    
->>>>>>> master
->>>>>>> origin/Fredrik-branch
-    ((= (car items) 0)
-     (begin (draw-grid canvas dc x y 20 20 "white")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 1)
-     (begin (draw-grid canvas dc x y 20 20 "lime")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 2)
-     (begin (draw-grid canvas dc x y 20 20 "blue")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 3)
-     (begin (draw-grid canvas dc x y 20 20 "red")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 4)
-     (begin (draw-grid canvas dc x y 20 20 "yellow")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 5)
-     (begin (draw-grid canvas dc x y 20 20 "orange")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 6)
-     (begin (draw-grid canvas dc x y 20 20 "cyan")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))
-    ((= (car items) 7)
-     (begin (draw-grid canvas dc x y 20 20 "magenta")
-            (draw-lines canvas dc (cdr items) (+ x 20) y)))))
+  (let ((color (return-color-from-num (car items))))
+    (cond
+      ((empty? (cdr items))
+       (draw-grid canvas dc x y 20 20 color))
+      (else
+       (begin (draw-grid canvas dc x y 20 20 color)
+              (draw-lines canvas dc (cdr items) (+ x 20) y))))))
 
-(define (random-color)
-  (let ((color-list '("blue" "red" "yellow" "orange" "lime" "magenta" "cyan")))
-    (car (shuffle color-list))))
-
-<<<<<<< HEAD
-;; Ritar block givet lista av blockets koordinater (tex (send *I* get-place)).
-(define (draw-block canvas dc block color)
-=======
-;; (Ritar block givet lista av blockets koordinater (tex (send *I* get-place)). Inargument: canvas dc block)
-;;;;;; iggnorera då vi inte kommer att behöva denna!
-(define (draw-block canvas block-dc block color)
->>>>>>> master
-  (let ((part1 (first block))
-        (part2 (second block))
-        (part3 (third block))
-        (part4 (fourth block)))
-<<<<<<< HEAD
+;; Ritar block givet lista av blockets koordinater. Inargument: canvas, dc, block, color (nummer), x, y.
+(define (draw-block canvas dc block color x y)
     (send dc set-brush color 'solid)
-    (send dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
-    (send dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20) ;; koordinaterna multipliceras med 20 så att det motsvarar
-    (send dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
-    (send dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part1) 1) 20)) (+ y (* (- (send block get-y-part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part2) 1) 20)) (+ y (* (- (send block get-y-part2) 1) 20)) 20 20) ;; koordinaterna multipliceras med 20 så att det motsvarar
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part3) 1) 20)) (+ y (* (- (send block get-y-part3) 1) 20)) 20 20) ;; ett steg på 20 pixlar
+    (send dc draw-rectangle (+ x (* (- (send block get-x-part4) 1) 20)) (+ y (* (- (send block get-y-part4) 1) 20)) 20 20))
 
-;; tillfälligt... 
-(define (draw-text canvas dc)
-  (send dc draw-text "You lose!" 180 75))
+;; Om någon förlorar visas text på vinnare/förlorare.
+(define (draw-winner-text canvas dc)
+  (cond ((send *board-1* lost-game?)  ;; om spelplan-1 inte är "in-game"
+         (send dc set-font (make-font #:size 40 #:family 'roman #:weight 'bold))
+         (send dc set-text-foreground "red")
+         (send dc draw-text "You lose!" 520 50)
+         (send dc set-text-foreground "blue")
+         (send dc draw-text "You won!" 120 50))
+        ((send *board-2* lost-game?)  ;; om spelplan-1 inte är "in-game"
+         (send dc set-font (make-font #:size 40 #:family 'roman #:weight 'bold))
+         (send dc set-text-foreground "red")
+         (send dc draw-text "You lose!" 120 50)
+         (send dc set-text-foreground "blue")
+         (send dc draw-text "You won!" 520 50))
+        (else void)))
+
+;; Visar spelbrädets score
+(define (draw-score canvas dc board-score x y)
+  (let ((score-text (string-join (append '("Score: ") (list board-score)))))
+    (send dc set-font (make-font #:size 20 #:family 'roman
+                                 #:weight 'bold))
+    (send dc set-text-foreground "black")
+    (send dc draw-text score-text x y)))
+
+;; Allt som ska ritas när man spelar på board-1. (spelbräde, block, score)
+(define (show-board-1 canvas dc)
+  (let ((cur-block-b1 (send *board-1* get-cur-block)) ;; "current block board-1"
+        (block-color-b1 (send (send *board-1* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
+    (draw-board canvas dc *board-1* 500 100)
+    (draw-block canvas dc cur-block-b1 block-color-b1 500 100)
+    (draw-score canvas dc (number->string (send *board-1* get-score)) 500 500)))
+
+;; Allt som ska ritas när man spelar på board-2. (spelbräde, block, score)
+(define (show-board-2 canvas dc)
+  (let ((cur-block-b2 (send *board-2* get-cur-block)) ;; "current block board-2"
+        (block-color-b2 (send (send *board-2* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
+    (draw-board canvas dc *board-2* 100 100)
+    (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
+    (draw-score canvas dc (number->string (send *board-2* get-score)) 100 500)))
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
-  (let ((cur-block (send *board-1* get-cur-block))
-        (block-color (send (send *board-1* get-cur-block) get-color-name)))
-    (draw-board canvas dc)
-    (draw-block canvas dc (send cur-block get-place) block-color)
-    ;(draw-block canvas dc (send *I* get-place) "magenta")
-    ))
-<<<<<<< HEAD
-  ;(send *board-1-canvas* refresh-now))v
-=======
-  ;(send *a-canvas* refresh-now))
-=======
-    (send block-dc set-brush color 'solid)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part1) 1) 20)) (+ 100 (* (- (cadr part1) 1) 20)) 20 20) ;; alla fyra delar bildar ett helt block   ; (car part1) (cadr part1) 20 20)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part2) 1) 20)) (+ 100 (* (- (cadr part2) 1) 20)) 20 20)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part3) 1) 20)) (+ 100 (* (- (cadr part3) 1) 20)) 20 20)
-    (send block-dc draw-rectangle (+ 100 (* (- (car part4) 1) 20)) (+ 100 (* (- (cadr part4) 1) 20)) 20 20)))
-
-
-    
-(define (draw-cycle canvas dc); Stoppa in alla saker som ska ritas i denna.
-  (draw-board canvas dc)
-  (draw-block canvas dc (send *I* get-place) (random-color)))
-  ;(send *a-canvas* refresh-now))
- ; (send *a-canvas* refresh-now))
->>>>>>> master
->>>>>>> origin/Fredrik-branch
+  (cond ((send *board-1* singelplayer?)
+         (show-board-1 canvas dc))
+        ((send *board-2* singelplayer?)
+         (show-board-2 canvas dc))
+        (else
+         (show-board-1 canvas dc)
+         (show-board-2 canvas dc)
+         (draw-winner-text canvas dc))))
 
 (define (refresh-draw-cycle)
-  (send *board-1-canvas* refresh-now))
+  (send *game-canvas* refresh-now))
 
-<<<<<<< HEAD
-(define (generate-block)
-  (let ((blocks (send *board-1* get-all-types)))
+;; Genererar ett random block utav alla typer som finns i board.
+(define (generate-block board)
+  (let ((blocks (send board get-all-types)))
     (car (shuffle blocks))))
 
-;; ska anropa fall senare. Nu rör den sig ner i oändligheten.
-(define (draw-fall)
-  (let ((cur-block (send *board-1* get-cur-block))
-        (block-color (send (send *board-1* get-cur-block) get-color-num))
-        (block-coord (send (send *board-1* get-cur-block) get-place))
-        (next-block-coord (send (send *board-1* get-cur-block) return-move-down))
-        (occupied-coord (send *board-1* get-occupied-coord))
-        (bottom (send *board-1* get-bottom))
-        (new-block (generate-block)))
+;; Får block att falla i givet spelbräde.
+(define (draw-fall board)
+  (let ((cur-block (send board get-cur-block))
+        (block-color (send (send board get-cur-block) get-color-num))
+        (block-coord (send (send board get-cur-block) get-place))
+        (next-block-coord (send (send board get-cur-block) return-move-down))
+        (occupied-coord (send board get-occupied-coord))
+        (bottom (send board get-bottom))
+        (new-block (generate-block board)))
     (cond ((or (occurs-coordinates? next-block-coord occupied-coord) (occurs-coordinates? block-coord bottom))
-           (send *board-1* remove-cur-block)
-           (send cur-block reset-coord)
-           (send *board-1* insert-block block-color block-coord) ;; sätter in blocket i board.
-           (send *board-1* queue-block new-block)) ;; lägger ett block på kö
+           (send board insert-block block-color cur-block) ;; sätter in blocket i board.
+           (send cur-block reset-block)
+           (send board remove-cur-block)
+           (send board queue-block new-block) ;; lägger ett block på kö
+           (send board add-point 1))  ;; ge ett poäng
           (else (send cur-block move-down)))))
-
-;(define *draw-timer* (new timer%
-;                     [notify-callback refresh-draw-cycle]))
-;(send *draw-timer* start 16 #f) ;; aktiveras i main...
-;
-;(define *fall-timer* (new timer%
-;                     [notify-callback draw-fall]))
-;(send *fall-timer* start 300 #f)
-=======
-(define (draw-fall)
-  ;(send **
-  (send *T* move-down))
-  
-
-(define *fall-timer* (new timer%
-                     [notify-callback draw-fall]))
-(send *fall-timer* start 1000 #f)
->>>>>>> master
 
 ;; Subklass av canvas%, som kan hantera key-events
 (define input-canvas%
   (class canvas%
-       (init-field keyboard-handler)
-       (define/override (on-char key-event)
-         (keyboard-handler key-event))
-       (super-new)))
+    (init-field keyboard-handler)
+    (define/override (on-char key-event)
+      (keyboard-handler key-event))
+    (super-new)))
 
-(define *board-1-canvas* ;; vet inte om det är till en fördel att dela upp det i *board-1-canvas*/*board-2-canvas*
+(define *game-canvas*
   (new input-canvas%
        [parent *window*]
        [paint-callback draw-cycle]
-       [keyboard-handler (lambda (key-event)
-                           (let ((key-code (send key-event get-key-code)))
+       [keyboard-handler (lambda (key-event) ;; vid knapptryck skickas vissa key-events till en lista. Är aktiva tills de tas bort vid 'release.
+                           (let ((key-code (send key-event get-key-code))
+                                 (key-code-release (send key-event get-key-release-code)))
                              (if (not (equal? key-code 'release))
-                                 (move key-code)  ;(send *my-rotating-image* key-down key-code)
-                                 (void))))]))
+                                 ;;;; ska jag dela upp det så?...
+                                 (cond  ((send *board-1* direction-key? key-code) ;; bara "direction-keys" skickas till active-keys
+                                         (send *board-1* add-active-key key-code)
+                                         (send-list-to-move (send *board-1* get-active-keys)))
+                                        ((send *board-2* direction-key? key-code)
+                                         (send *board-2* add-active-key key-code)
+                                         (send-list-to-move (send *board-2* get-active-keys)))
+                                        (else (move key-code *board-1*)
+                                              (move key-code *board-2*)))
+                                 (begin (send *board-1* remove-active-key key-code-release)
+                                        (send *board-2* remove-active-key key-code-release)))))]))
 
-(send *board-1-canvas* focus)
+                             ;(cond ((not (equal? key-code 'release))
+                             ;       (move key-event *board-1*))
+                             ;      ((or (or (or (or (or (equal? key-code 'left) (equal? key-code 'right)) (equal? key-code #\a)) (equal? key-code #\d)) (equal? key-code 'down)) (equal? key-code #\s))
+                             ;       (send *board-1* add-active-key key-code)
+                             ;       (send-list-to-move (send *board-1* get-active-keys)))
+                             ;      (else (send *board-1* remove-active-key key-code-release)))))]))
+                                    
+                                   ;;; bara vissa tangenter till lista
+;                             (if (not (equal? key-code 'release))  ;; testa get-key-release-code och 'press om det blir för långsamt med många key-code
+;                                 (begin (send *board-1* add-active-key key-code)
+;                                        (test-send-move (send *board-1* get-active-keys)))
+;                                 (send *board-1* remove-active-key key-code-release))))]))
 
-<<<<<<< HEAD
+
+                                 ;(begin (move key-code *board-1*)
+                                 ;       (move key-code *board-2*))
+
+;;;; använd for-each som i dokumentationen på listan!
+;;;; På "key down" lägg till tangenter i lista. Key up ta bort. Fortsätt med key-event så länge key ligger i listan. (inte använda equal?... "key=?"?)
+;;;; on-key,  on-release
+                                 
+(send *game-canvas* focus) ;; gör att tangentbordshändelser har "fokus" på *game-canvas*
+
 (provide (all-defined-out))
-=======
-(provide (all-defined-out))
-=======
->>>>>>> origin/master
->>>>>>> master

@@ -20,13 +20,13 @@
           (send *board-1* lose)))
     
     (cond [(send *board-1* too-high?)
-           (send *board-2* add-point (/ b1-score 4)) ;; om spelare-1:s block hamnar för högt får sp-2 25% av sp-1:s poäng innan vinnare avgörs.
+           (send *board-2* add-point b1-score) ;; om spelare-1:s block hamnar för högt får sp-2 25% av sp-1:s poäng innan vinnare avgörs.
            (decide-winner)
            (send *fall-timer-b1* stop)
            (send *fall-timer-b2* stop)
            (send *condition-timer* stop)]
           [(send *board-2* too-high?)
-           (send *board-1* add-point (/ b2-score 4))
+           (send *board-1* add-point b2-score)
            (decide-winner)
            (send *fall-timer-b2* stop)
            (send *fall-timer-b1* stop)
@@ -62,15 +62,15 @@
 
 (define (button-hanler button-press)
   (cond ((equal? button-press "Play multiplayer")
-         (send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
-         (send *horizontal-bottom* delete-child play-singel-button)
+         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+         ;(send *horizontal-bottom* delete-child play-singel-button)
          (send *draw-timer* start 16 #f)
          (send *condition-timer* start 16 #f)
          (send *fall-timer-b1* start 300 #f) ;; startar bara timer hos board-1 och -2
          (send *fall-timer-b2* start 300 #f))
         ((equal? button-press "Play singelplayer")
-         (send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
-         (send *horizontal-bottom* delete-child play-singel-button)
+         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+         ;(send *horizontal-bottom* delete-child play-singel-button)
          (send *board-1* play-singelplayer)
          (send *draw-timer* start 16 #f)
          (send *condition-timer* start 16 #f)         
@@ -86,8 +86,9 @@
        [label button-label]
        [callback (lambda (button event)
                    (button-hanler (send button get-label)))]
-       [font (make-font #:size 20 #:family 'roman #:weight 'bold)]
-       ))
+       [font (make-font #:size 20 #:family 'roman #:weight 'bold)]))
+
+(button-hanler "Play multiplayer")
 
 ;(define *horizontal-center*
 ;  (new horizontal-panel%
@@ -95,21 +96,18 @@
 ;       [alignment '(center center)]
 ;       [style '(border)]))
 ;
-(define *horizontal-bottom*
-  (new horizontal-panel%
-       [parent *window*]
-       [alignment '(center bottom)]
-       [min-height 0]
-       [style '(border)]
-       [border 0]
-       [spacing 10]
-       ))
-
-(define play-multi-button
-  (make-button *horizontal-bottom* "Play multiplayer"))
-
-(define play-singel-button
-  (make-button *horizontal-bottom* "Play singelplayer"))
-
-(define quit-button
-  (make-button *horizontal-bottom* "QUIT"))
+;(define *horizontal-bottom*
+;  (new horizontal-panel%
+;       [parent *window*]
+;       [alignment '(center bottom)]
+;       [min-height 0]
+;       [style '(border)]))
+;
+;(define play-multi-button
+;  (make-button *horizontal-bottom* "Play multiplayer"))
+;
+;(define play-singel-button
+;  (make-button *horizontal-bottom* "Play singelplayer"))
+;
+;(define quit-button
+;  (make-button *horizontal-bottom* "QUIT"))

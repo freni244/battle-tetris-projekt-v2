@@ -10,14 +10,35 @@
                 down-key
                 rotate-right-key
                 rotate-left-key
-                drop-key)
+                drop-key
+                direction-keys) ;; (höger, vänster, ner)
     (field [next-blocks '()]
            [hold '()]
            [all-types '()]
            [score 0]
            [lost-game #f]
-           [singelplayer #f])
+           [singelplayer #f]
+           [active-keys '()])
+
+    (define/public (get-active-keys) active-keys)
+
+    (define/public (get-direction-keys) direction-keys)
+
+    (define/public (direction-key? key)
+      (occurs? key direction-keys))
     
+    ;; Lägger till en aktiv tangent om den inte finns i active-keys.
+    (define/public (add-active-key key)
+      (if (not (occurs? key active-keys))
+          (set! active-keys (cons key active-keys))
+          void))
+
+    (define/public (remove-active-key key)
+      (set! active-keys (filter (lambda (el) (and (not (equal? el key)) el)) active-keys)))
+
+    (define/public (remove-all)
+      (set! active-keys '()))
+
     (define/public (get-score) score)
 
     (define/public (add-point point)
