@@ -4,6 +4,7 @@
 (require "board.rkt")
 (require "game-init.rkt")
 (require "draw-game.rkt")
+(provide *draw-timer*)
 
 ;; Ändrar spelet om villkor är uppfyllda. (tex tar bort fulla rader och kollar om block är i toppen).
 (define (conditions)  ;; istället för game-loop...
@@ -41,6 +42,9 @@
           
           [else void])))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Timers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define *draw-timer* (new timer%
                      [notify-callback refresh-draw-cycle]))
@@ -56,21 +60,22 @@
 (define *condition-timer* (new timer%
                                [notify-callback conditions]))
 
-(send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
-(send *board-2* queue-block (generate-block *board-2*))
-(send *window* show #t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Knappar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Hanterar knapptryckningar.
 (define (button-hanler button-press)
   (cond ((equal? button-press "Play multiplayer")
-         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
-         ;(send *horizontal-bottom* delete-child play-singel-button)
+         (send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+         (send *horizontal-bottom* delete-child play-singel-button)
          (send *draw-timer* start 16 #f)
          (send *condition-timer* start 16 #f)
          (send *fall-timer-b1* start 300 #f) ;; startar bara timer hos board-1 och -2
          (send *fall-timer-b2* start 300 #f))
         ((equal? button-press "Play singelplayer")
-         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
-         ;(send *horizontal-bottom* delete-child play-singel-button)
+         (send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+         (send *horizontal-bottom* delete-child play-singel-button)
          (send *board-1* play-singelplayer)
          (send *draw-timer* start 16 #f)
          (send *condition-timer* start 16 #f)         
@@ -88,26 +93,24 @@
                    (button-hanler (send button get-label)))]
        [font (make-font #:size 20 #:family 'roman #:weight 'bold)]))
 
-(button-hanler "Play multiplayer")
+;(button-hanler "Play multiplayer")
 
-;(define *horizontal-center*
-;  (new horizontal-panel%
-;       [parent *window*]
-;       [alignment '(center center)]
-;       [style '(border)]))
-;
-;(define *horizontal-bottom*
-;  (new horizontal-panel%
-;       [parent *window*]
-;       [alignment '(center bottom)]
-;       [min-height 0]
-;       [style '(border)]))
-;
-;(define play-multi-button
-;  (make-button *horizontal-bottom* "Play multiplayer"))
-;
-;(define play-singel-button
-;  (make-button *horizontal-bottom* "Play singelplayer"))
-;
-;(define quit-button
-;  (make-button *horizontal-bottom* "QUIT"))
+(define *horizontal-bottom*
+  (new horizontal-panel%
+       [parent *window*]
+       [alignment '(center bottom)]
+       [min-height 0]
+       [style '(border)]))
+
+(define play-multi-button
+  (make-button *horizontal-bottom* "Play multiplayer"))
+
+(define play-singel-button
+  (make-button *horizontal-bottom* "Play singelplayer"))
+
+(define quit-button
+  (make-button *horizontal-bottom* "QUIT"))
+
+(send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
+(send *board-2* queue-block (generate-block *board-2*))
+(send *window* show #t)

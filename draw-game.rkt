@@ -12,6 +12,12 @@
                      [x 0]	 
                      [y 0]))
 
+(define *game-area*
+  (new horizontal-panel%
+       [parent *window*]
+       [alignment '(center center)]
+       [min-height 570]))
+
 (define (draw-grid canvas dc x y width height color)
   (send dc set-brush color 'solid)
   (send dc set-pen "black" 2 'solid)
@@ -133,7 +139,7 @@
 
 (define *game-canvas*
   (new input-canvas%
-       [parent *window*]
+       [parent *game-area*]
        [paint-callback draw-cycle]
        [keyboard-handler (lambda (key-event) ;; Vid knapptryck skickas vissa key-events till en lista. Är aktiva tills de tas bort vid 'release.
                            (let ((key-code (send key-event get-key-code))
@@ -150,5 +156,86 @@
                                         (send *board-2* remove-active-key key-code-release)))))]))
                                  
 (send *game-canvas* focus) ;; gör att tangentbordshändelser har "fokus" på *game-canvas*
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Timers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(define *draw-timer* (new timer%
+;                     [notify-callback refresh-draw-cycle]))
+;
+;(define *fall-timer-b1* (new timer%
+;                             [notify-callback (lambda ()
+;                                                (draw-fall *board-1*))]))
+;
+;(define *fall-timer-b2* (new timer%
+;                             [notify-callback (lambda ()
+;                                                (draw-fall *board-2*))]))
+;
+;(define *condition-timer* (new timer%
+;                               [notify-callback conditions]))
+;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;; Knappar
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;
+;
+;(define (button-hanler button-press)
+;  (cond ((equal? button-press "Play multiplayer")
+;         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+;         ;(send *horizontal-bottom* delete-child play-singel-button)
+;         (send *draw-timer* start 16 #f)
+;         (send *condition-timer* start 16 #f)
+;         (send *fall-timer-b1* start 300 #f) ;; startar bara timer hos board-1 och -2
+;         (send *fall-timer-b2* start 300 #f))
+;        ((equal? button-press "Play singelplayer")
+;         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
+;         ;(send *horizontal-bottom* delete-child play-singel-button)
+;         (send *board-1* play-singelplayer)
+;         (send *draw-timer* start 16 #f)
+;         (send *condition-timer* start 16 #f)         
+;         (send *fall-timer-b1* start 300 #f))
+;        ((equal? button-press "QUIT")
+;         (send *window* show #f))
+;        (else (void))))
+;
+;;; Skapar knapp som vid klick skickar sin lable till play-game.
+;(define (make-button panel button-label)
+;  (new button%
+;       [parent panel]
+;       [label button-label]
+;       [callback (lambda (button event)
+;                   (button-hanler (send button get-label)))]
+;       [font (make-font #:size 20 #:family 'roman #:weight 'bold)]))
+;
+;;(button-hanler "Play multiplayer")
+;
+;;;;;;;;;;;;; sätt board i här!!!!!!!!!!!!!!!!!!!!!!
+;(define *horizontal-center*
+;  (new horizontal-panel%
+;       [parent *window*]
+;       [alignment '(center center)]
+;       ;[style '(border)]
+;       [min-height 570]))
+;
+;(define *horizontal-bottom*
+;  (new horizontal-panel%
+;       [parent *window*]
+;       [alignment '(center bottom)]
+;       [min-height 0]
+;       [style '(border)]))
+;
+;(define play-multi-button
+;  (make-button *horizontal-bottom* "Play multiplayer"))
+;
+;(define play-singel-button
+;  (make-button *horizontal-bottom* "Play singelplayer"))
+;
+;(define quit-button
+;  (make-button *horizontal-bottom* "QUIT"))
+
 
 (provide (all-defined-out))
