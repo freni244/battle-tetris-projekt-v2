@@ -21,17 +21,19 @@
           (send *board-1* lose)))
     
     (cond [(send *board-1* too-high?)
-           (send *board-2* add-point b1-score) ;; om spelare-1:s block hamnar för högt får sp-2 25% av sp-1:s poäng innan vinnare avgörs.
+           (send *board-2* add-point b1-score)
            (decide-winner)
            (send *fall-timer-b1* stop)
            (send *fall-timer-b2* stop)
-           (send *condition-timer* stop)]
+           (send *condition-timer* stop)
+           (save-high-score b1-score "high-score.data")]
           [(send *board-2* too-high?)
            (send *board-1* add-point b2-score)
            (decide-winner)
            (send *fall-timer-b2* stop)
            (send *fall-timer-b1* stop)
-           (send *condition-timer* stop)]
+           (send *condition-timer* stop)
+           (save-high-score b2-score "high-score.data")]
           
           [(send *board-1* exist-full-row?) 
            (send *board-1* collapse-from full-row-pos-b1) ;; tar bort fulla rader och får övre block att ramla.
@@ -61,7 +63,7 @@
                                [notify-callback conditions]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;; Knappar
+;;;;;; Knappar och paneler
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Hanterar knapptryckningar.
@@ -110,6 +112,48 @@
 
 (define quit-button
   (make-button *horizontal-bottom* "QUIT"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Spara i fil
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Öppnar "high-score.data" om existerar. Annars skapas fil.
+(define high-score-file
+  (open-output-file "high-score.data" #:exists 'can-update))
+
+;; Skriver text (hig-score) i en existerande fil.
+;; high-score filename -> text i fil
+;; problemet: old-high-score blir alltid void -> all score blir nya high-score
+(define save-high-score
+  (lambda (high-score filename)
+    (let ((old-high-score (reader filename (lambda (score) (string->number score))))
+          (*output* (open-output-file filename #:exists 'truncate)))
+      (cond ((not (void? old-high-score))
+             (cond ((< old-high-score high-score)
+                    (write high-score *output*) ;high-score
+                    (newline *output*)
+                    (close-output-port *output*))
+                   (else
+                    (write old-high-score *output*)
+                    (newline *output*)
+                    (close-output-port *output*))))
+            (else
+             (write high-score *output*)
+             (newline *output*)
+             (close-output-port *output*))))))
+
+;; Läser första raden från fil och applicerar procedur.
+;; filename proc -> "(proc line)"
+(define (reader filename proc)
+  (define (read-next-line-iter file)
+    (let ((line (read-line file 'any)))
+      (unless (eof-object? line)
+        (proc line))))
+  (call-with-input-file filename read-next-line-iter))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Gör automatiskt
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
 (send *board-2* queue-block (generate-block *board-2*))

@@ -69,11 +69,13 @@
          (send dc draw-text "You won!" 520 50))
         (else void)))
 
-;; Visar spelbrädets score
-(define (draw-score canvas dc board-score x y)
-  (let ((score-text (string-join (append '("Score: ") (list board-score)))))
-    (send dc set-font (make-font #:size 20 #:family 'roman
-                                 #:weight 'bold))
+;; Visar score. (används till spelbrädens score och high-score)
+;; Inargument: canvas dc. Poäng som nummer "score". Texten före poäng "text" (tex "High score: ")
+(define (draw-score canvas dc score x y text)
+  (let ((score-text (if (eof-object? score)
+                          text
+                          (string-join (append (list text) (list score))))))
+    (send dc set-font (make-font #:size 20 #:family 'roman #:weight 'bold))
     (send dc set-text-foreground "black")
     (send dc draw-text score-text x y)))
 
@@ -83,7 +85,7 @@
         (block-color-b1 (send (send *board-1* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
     (draw-board canvas dc *board-1* 500 100)
     (draw-block canvas dc cur-block-b1 block-color-b1 500 100)
-    (draw-score canvas dc (number->string (send *board-1* get-score)) 500 500)))
+    (draw-score canvas dc (number->string (send *board-1* get-score)) 500 500 "Score: ")))
 
 ;; Allt som ska ritas när man spelar på board-2. (spelbräde, block, score)
 (define (show-board-2 canvas dc)
@@ -91,10 +93,13 @@
         (block-color-b2 (send (send *board-2* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
     (draw-board canvas dc *board-2* 100 100)
     (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
-    (draw-score canvas dc (number->string (send *board-2* get-score)) 100 500)))
+    (draw-score canvas dc (number->string (send *board-2* get-score)) 100 500 "Score: ")))
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
+  (draw-score canvas dc (call-with-input-file "high-score.data"
+                          (lambda (score)
+                            (read-string 5 score))) 30 20 "High score: ")
   (cond ((send *board-1* singelplayer?)
          (show-board-1 canvas dc))
         ((send *board-2* singelplayer?)
@@ -156,86 +161,5 @@
                                         (send *board-2* remove-active-key key-code-release)))))]))
                                  
 (send *game-canvas* focus) ;; gör att tangentbordshändelser har "fokus" på *game-canvas*
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;; Timers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;(define *draw-timer* (new timer%
-;                     [notify-callback refresh-draw-cycle]))
-;
-;(define *fall-timer-b1* (new timer%
-;                             [notify-callback (lambda ()
-;                                                (draw-fall *board-1*))]))
-;
-;(define *fall-timer-b2* (new timer%
-;                             [notify-callback (lambda ()
-;                                                (draw-fall *board-2*))]))
-;
-;(define *condition-timer* (new timer%
-;                               [notify-callback conditions]))
-;
-;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;; Knappar
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-;
-;
-;(define (button-hanler button-press)
-;  (cond ((equal? button-press "Play multiplayer")
-;         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
-;         ;(send *horizontal-bottom* delete-child play-singel-button)
-;         (send *draw-timer* start 16 #f)
-;         (send *condition-timer* start 16 #f)
-;         (send *fall-timer-b1* start 300 #f) ;; startar bara timer hos board-1 och -2
-;         (send *fall-timer-b2* start 300 #f))
-;        ((equal? button-press "Play singelplayer")
-;         ;(send *horizontal-bottom* delete-child play-multi-button) ;; tar bort knappar
-;         ;(send *horizontal-bottom* delete-child play-singel-button)
-;         (send *board-1* play-singelplayer)
-;         (send *draw-timer* start 16 #f)
-;         (send *condition-timer* start 16 #f)         
-;         (send *fall-timer-b1* start 300 #f))
-;        ((equal? button-press "QUIT")
-;         (send *window* show #f))
-;        (else (void))))
-;
-;;; Skapar knapp som vid klick skickar sin lable till play-game.
-;(define (make-button panel button-label)
-;  (new button%
-;       [parent panel]
-;       [label button-label]
-;       [callback (lambda (button event)
-;                   (button-hanler (send button get-label)))]
-;       [font (make-font #:size 20 #:family 'roman #:weight 'bold)]))
-;
-;;(button-hanler "Play multiplayer")
-;
-;;;;;;;;;;;;; sätt board i här!!!!!!!!!!!!!!!!!!!!!!
-;(define *horizontal-center*
-;  (new horizontal-panel%
-;       [parent *window*]
-;       [alignment '(center center)]
-;       ;[style '(border)]
-;       [min-height 570]))
-;
-;(define *horizontal-bottom*
-;  (new horizontal-panel%
-;       [parent *window*]
-;       [alignment '(center bottom)]
-;       [min-height 0]
-;       [style '(border)]))
-;
-;(define play-multi-button
-;  (make-button *horizontal-bottom* "Play multiplayer"))
-;
-;(define play-singel-button
-;  (make-button *horizontal-bottom* "Play singelplayer"))
-;
-;(define quit-button
-;  (make-button *horizontal-bottom* "QUIT"))
-
 
 (provide (all-defined-out))
