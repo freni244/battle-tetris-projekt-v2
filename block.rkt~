@@ -7,7 +7,9 @@
                 start-coordinates
                 type
                 color) ;; färgen är en siffra mellan 1-7
-    (field [rotation 'up]
+    (field [place '()]
+           [hold '()]
+           [rotation 'up]
            [start-rotation 'up])
 
     ;; Returnerar x-/y-koordinater för blockets olika delar (1-4) ur coordinates.
@@ -19,21 +21,10 @@
     (define/public (get-y-part3) (cadr (caddr coordinates)))
     (define/public (get-x-part4) (car (cadddr coordinates)))
     (define/public (get-y-part4) (cadr (cadddr coordinates)))
-
-    ;; Returnerar x-/y-koordinater för blockets olika delar (1-4) ur start-coordinates.
-    ;;;;;; Jätteflu lösning för att visa nästa block utan att den ska ramla. Ignorera att detta står med.
-    (define/public (get-x-part1-next-block) (caar start-coordinates))
-    (define/public (get-y-part1-next-block) (cadar start-coordinates))
-    (define/public (get-x-part2-next-block) (caadr start-coordinates))
-    (define/public (get-y-part2-next-block) (cadr (cadr start-coordinates)))
-    (define/public (get-x-part3-next-block) (caaddr start-coordinates))
-    (define/public (get-y-part3-next-block) (cadr (caddr start-coordinates)))
-    (define/public (get-x-part4-next-block) (car (cadddr start-coordinates)))
-    (define/public (get-y-part4-next-block) (cadr (cadddr start-coordinates)))
     
-    (define/public (get-color-num) color) ;; returnerar färg som nummer
+    (define/public (get-color-num) color) ;; returns color as number
 
-    (define/public (get-color-name) ;; returnerar färg som string
+    (define/public (get-color-name) ;; returns name of color
       (cond ((= color 1) "lime")
             ((= color 2) "blue")
             ((= color 3) "red")
@@ -42,6 +33,8 @@
             ((= color 6) "cyan")
             ((= color 7) "magenta")
             (else "gold")))
+    
+    ;(define/public (generate-block)...
 
     (define/public (occurs? el list)
       (not (null? (filter (lambda (x) (equal? x el)) list))))
@@ -77,11 +70,11 @@
          (move-coords -1 0 -1 0 -1 0 -1 0))))
 
     ;; Flyttar blocket vänster eller höger. (med set!)
-    ;; Inargument: direction ('left eller 'right) -> new-coordinates
     (define/public (move-direction direction)
       (set! coordinates (return-move-direction direction)))
                 
-    (define/public (get-rotation) rotation)
+    (define/public (get-rotation)
+      rotation)
 
     ;; Ändrar till roterade koordinater
     (define/public (rotate direction)
@@ -103,8 +96,8 @@
                  (set! rotation 'up)
                  (set! rotation 'down)))))
 
-    ;; returnerar roterade koordinater
-    (define/public (return-rotate direction);Säger hur koordinaterna ska ändras när ett visst block i en viss rotation roteras.
+    ;; returnerar roterade koordinater (även set!, men det -> fel då meningen med return-rotate är att även kunna kolla om det går att rotera utan att ändra)
+    (define/public (return-rotate direction);Säger hur koordinaterna ska ändras när ett visst block i en viss rotation roteras. ;ser hemskt ut....
       (cond
         ((eq? type 'I)
          (cond
@@ -271,7 +264,7 @@
          (else
           (display "There is no such type "))))
     
-    (define/public (get-place) ;; Returnerar koordinaterna som listor i en lista
+    (define/public (get-place) ;; Returnerar koordinaterna som par i en lista
       coordinates)
     
     (define/public (reset-coord)

@@ -1,4 +1,5 @@
 #lang racket/gui
+;(provide *draw-timer*)
 (require "block.rkt")
 (require "board.rkt")
 (require "game-init.rkt")
@@ -12,20 +13,26 @@
        [full-row-pos-b2 (send *board-2* count-to-full-row)]
        [b1-score (send *board-1* get-score)]
        [b2-score (send *board-2* get-score)])
+
+    ;; Jämför poäng - avgör vinnare
+    (define (decide-winner)
+      (if (> b1-score b2-score)
+          (send *board-2* lose)
+          (send *board-1* lose)))
     
     (cond [(send *board-1* too-high?)
-           (send *board-1* lose)
+           (send *board-2* add-point b1-score)
+           (decide-winner)
            (send *fall-timer-b1* stop)
            (send *fall-timer-b2* stop)
            (send *condition-timer* stop)
-           (save-high-score b1-score "high-score.data")
-           (save-high-score b2-score "high-score.data")]
+           (save-high-score b1-score "high-score.data")]
           [(send *board-2* too-high?)
-           (send *board-2* lose)
+           (send *board-1* add-point b2-score)
+           (decide-winner)
            (send *fall-timer-b2* stop)
            (send *fall-timer-b1* stop)
            (send *condition-timer* stop)
-           (save-high-score b1-score "high-score.data")
            (save-high-score b2-score "high-score.data")]
           
           [(send *board-1* exist-full-row?) 
@@ -88,6 +95,8 @@
                    (button-hanler (send button get-label)))]
        [font (make-font #:size 20 #:family 'roman #:weight 'bold)]))
 
+;(button-hanler "Play multiplayer")
+
 (define *horizontal-bottom*
   (new horizontal-panel%
        [parent *window*]
@@ -143,15 +152,9 @@
   (call-with-input-file filename read-next-line-iter))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;; Vid start
+;;;;;; Gör automatiskt
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(define (play-game)
-  (send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
-  (send *board-1* queue-block (generate-block *board-1*)) ;; lite onödigt många block kanske (vi valde bara att se ett bock i förväg)
-  (send *board-1* queue-block (generate-block *board-1*))
-  (send *board-1* queue-block (generate-block *board-1*))
-  (send *board-2* queue-block (generate-block *board-2*))
-  (send *board-1* queue-block (generate-block *board-2*))
-  (send *board-2* queue-block (generate-block *board-2*))
-  (send *board-1* queue-block (generate-block *board-2*))
-  (send *window* show #t))
+
+(send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
+(send *board-2* queue-block (generate-block *board-2*))
+(send *window* show #t)
