@@ -126,9 +126,9 @@
        [left-key 'left]
        [right-key 'right]
        [down-key 'down]
-       [rotate-right-key #\space]
-       [rotate-left-key #\m]
-       [drop-key #\n]
+       [rotate-right-key #\m]
+       [rotate-left-key #\n]
+       [drop-key 'rshift]
        [direction-keys '(left right down)]))
 
 (define *board-2*
@@ -180,10 +180,6 @@
 (send *board-1* add-all-types *S-b1*)
 (send *board-1* add-all-types *T-b1*)
 (send *board-1* add-all-types *Z-b1*)
-
-;(send *board-1* queue-block *I-b1*)  ;; egentligen inte här som vi kommer att sätta in block på kö
-
-;(send *board-2* queue-block *I-b2*)
 
 (send *board-2* add-all-types *I-b2*)
 (send *board-2* add-all-types *J-b2*)

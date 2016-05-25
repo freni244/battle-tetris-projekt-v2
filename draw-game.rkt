@@ -18,9 +18,9 @@
        [alignment '(center center)]
        [min-height 570]))
 
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Spelbräde och block
-;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Ritar spelbrädet. Inargument: board (spelbräde som objekt), x, y (spelbrädets koordinater), canvas, dc.
 (define (draw-board canvas dc board x y)
@@ -54,7 +54,7 @@
     (send dc draw-rectangle (+ x (* (- (send block get-x-part4) 1) width)) (+ y (* (- (send block get-y-part4) 1) height)) width height))
 
 ;; Ritar block givet lista av blockets koordinater. Inargument: canvas, dc, block, color (nummer), x, y.
-;;;;;; Jätteflu lösning för att visa nästa block utan att den ska ramla. Ignorera att detta står med.
+;;;;;; Ful lösning för att visa nästa block utan att den ska ramla (repeterad kod). Ignorera att detta står med.
 (define (draw-next-block canvas dc block color x y width height)
   (send dc set-brush color 'solid)
   (send dc draw-rectangle (+ x (* (- (send block get-x-part1-next-block) 1) width)) (+ y (* (- (send block get-y-part1-next-block) 1) height)) width height) ;; alla fyra delar bildar ett helt block

@@ -21,7 +21,7 @@
     (define/public (get-y-part4) (cadr (cadddr coordinates)))
 
     ;; Returnerar x-/y-koordinater för blockets olika delar (1-4) ur start-coordinates.
-    ;;;;;; Jätteflu lösning för att visa nästa block utan att den ska ramla. Ignorera att detta står med.
+    ;;;;;; Ful lösning för att visa nästa block utan att den ska ramla (repeterad kod). Ignorera att detta står med.
     (define/public (get-x-part1-next-block) (caar start-coordinates))
     (define/public (get-y-part1-next-block) (cadar start-coordinates))
     (define/public (get-x-part2-next-block) (caadr start-coordinates))

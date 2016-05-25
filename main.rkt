@@ -6,12 +6,12 @@
 (provide *draw-timer*)
 
 ;; Ändrar spelet om villkor är uppfyllda. (tex tar bort fulla rader och kollar om block är i toppen).
-(define (conditions)  ;; istället för game-loop...
+(define (conditions)
   (let
       ([full-row-pos-b1 (send *board-1* count-to-full-row)] ;; positionen av en full rad (board-1 och -2).
        [full-row-pos-b2 (send *board-2* count-to-full-row)]
-       [b1-score (send *board-1* get-score)]
-       [b2-score (send *board-2* get-score)])
+       [b1-score (send *board-1* get-score)] ;; spelbräde 1:s poäng
+       [b2-score (send *board-2* get-score)]);; spelbräde 2:s poäng
     
     (cond [(send *board-1* too-high?)
            (send *board-1* lose)
@@ -147,7 +147,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define (play-game)
   (send *board-1* queue-block (generate-block *board-1*)) ;; lägger ett slumpat block i "kö"
-  (send *board-1* queue-block (generate-block *board-1*)) ;; lite onödigt många block kanske (vi valde bara att se ett bock i förväg)
+  (send *board-1* queue-block (generate-block *board-1*))
   (send *board-1* queue-block (generate-block *board-1*))
   (send *board-1* queue-block (generate-block *board-1*))
   (send *board-2* queue-block (generate-block *board-2*))

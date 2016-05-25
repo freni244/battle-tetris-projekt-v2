@@ -60,7 +60,7 @@
     (define/public (get-rotate-left-key) rotate-left-key)
     (define/public (get-drop-key) drop-key)
     
-    (define/public (get-bottom)
+    (define/public (get-bottom) ; (kunde hellre hämtats från game-init.)
       '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
     
     (define/public (get-left-wall)
@@ -122,18 +122,6 @@
       (ins-to-matrix block-color (send block get-x-part2) (send block get-y-part2) matrix)
       (ins-to-matrix block-color (send block get-x-part3) (send block get-y-part3) matrix)
       (ins-to-matrix block-color (send block get-x-part4) (send block get-y-part4) matrix))
-
-;    ;; Tar bort block. Sätter nollor vid blockets coordinater. Inargument: blockets coordinater
-;    (define/public (remove-block block)
-;      (ins-to-matrix 0 (send block get-x-part1) (send block get-y-part1) matrix)
-;      (ins-to-matrix 0 (send block get-x-part2) (send block get-y-part2) matrix)
-;      (ins-to-matrix 0 (send block get-x-part3) (send block get-y-part3) matrix)
-;      (ins-to-matrix 0 (send block get-x-part4) (send block get-y-part4) matrix))
-
-      
-;    (define (random-from-to n m)
-;        (+ n (random (- (+ m 1) n))))
-;    (let (block-color (random-from-to 1 7)))
     
     ;; Kollar om element finns i lista
     (define/public (occurs? el list)
@@ -203,12 +191,5 @@
                (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list)))
               (else (make-coord-list (+ y 1) (cdr board) coord-list))))
       (make-coord-list 1 matrix '()))
-
-
-;    (define/public (check-powerup row)
-;      (occurs? 8 row)) ;; beroende på vilket nummer vi ska ha för powerup
-    
- ;   (define/public (activate-powerup row)
- ;     ())
       
     (super-new)))
