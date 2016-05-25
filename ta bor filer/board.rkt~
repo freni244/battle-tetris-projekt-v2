@@ -1,69 +1,15 @@
 #lang racket
 (provide board%)
-(require "block.rkt")
 
 (define board%
   (class object%
-    (init-field matrix
-                left-key
-                right-key
-                down-key
-                rotate-right-key
-                rotate-left-key
-                drop-key
-                direction-keys) ;; (höger, vänster, ner)
+    (init-field matrix)
     (field [next-blocks '()]
            [hold '()]
-           [all-types '()]
-           [score 0]
-           [lost-game #f]
-           [singelplayer #f]
-           [active-keys '()])
+           [all-types '()])
 
-    (define/public (get-active-keys) active-keys)
-
-    (define/public (get-direction-keys) direction-keys)
-
-    (define/public (direction-key? key)
-      (occurs? key direction-keys))
-    
-    ;; Lägger till en aktiv tangent om den inte finns i active-keys.
-    (define/public (add-active-key key)
-      (if (not (occurs? key active-keys))
-          (set! active-keys (cons key active-keys))
-          void))
-
-    (define/public (remove-active-key key)
-      (set! active-keys (filter (lambda (el) (and (not (equal? el key)) el)) active-keys)))
-
-    (define/public (remove-all)
-      (set! active-keys '()))
-
-    (define/public (get-score) score)
-
-    (define/public (add-point point)
-      (set! score (+ score point)))
-
-    (define/public (lost-game?) lost-game) ;; Returnerar #t spelaren på spelbrädet har förlorat
-
-    (define/public (play-singelplayer)
-      (set! singelplayer #t))
-    
-    (define/public (singelplayer?) singelplayer)
-    
-    (define/public (lose)
-      (set! lost-game #t))
-
-    
-    ;; Returnerar knappar
     (define/public (get-matrix) matrix)
-    (define/public (get-left-key) left-key)
-    (define/public (get-right-key) right-key)
-    (define/public (get-down-key) down-key)
-    (define/public (get-rotate-right-key) rotate-right-key)
-    (define/public (get-rotate-left-key) rotate-left-key)
-    (define/public (get-drop-key) drop-key)
-    
+
     (define/public (get-bottom)
       '((1 20) (2 20) (3 20) (4 20) (5 20) (6 20) (7 20) (8 20) (9 20) (10 20)))
     
@@ -109,25 +55,32 @@
             (else (select-n (- n 1) (cdr list)))))
     
     ;; Infogar nummer till matris.
-    ;; Inargument: nummer "num", koordinater "x-pos, y-pos", matrix
+    ;; Inargument: infogat nummer "num", koordinater "x-pos, y-pos", matrix
     (define/public (ins-to-matrix num x-pos y-pos matrix)
-      (let ((new-row (ins-to-list num x-pos (select-n y-pos matrix))))
+      (let ((new-row (ins-to-list num x-pos (select-n y-pos matrix)))) ;; number inserted to row
         (ins-to-list new-row y-pos matrix)))
-
-    ;;;;;;; insert blir fel. Se även draw fall.
+    
     ;; Infogar ett blocks coordinater och färg/powerup (dvs nummer) 
-    (define/public (insert-block block-color block)
-      (ins-to-matrix block-color (send block get-x-part1) (send block get-y-part1) matrix)
-      (ins-to-matrix block-color (send block get-x-part2) (send block get-y-part2) matrix)
-      (ins-to-matrix block-color (send block get-x-part3) (send block get-y-part3) matrix)
-      (ins-to-matrix block-color (send block get-x-part4) (send block get-y-part4) matrix))
+    (define/public (insert-block block-color block-coord) ;; två variabler verkar inte funka vid "send"...
+      (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
+            (part2 (second block-coord))
+            (part3 (third block-coord))
+            (part4 (fourth block-coord)))
+        (ins-to-matrix block-color (car part1) (cadr part1) matrix)
+        (ins-to-matrix block-color (car part2) (cadr part2) matrix)
+        (ins-to-matrix block-color (car part3) (cadr part3) matrix)
+        (ins-to-matrix block-color (car part4) (cadr part4) matrix)))
 
-;    ;; Tar bort block. Sätter nollor vid blockets coordinater. Inargument: blockets coordinater
-;    (define/public (remove-block block)
-;      (ins-to-matrix 0 (send block get-x-part1) (send block get-y-part1) matrix)
-;      (ins-to-matrix 0 (send block get-x-part2) (send block get-y-part2) matrix)
-;      (ins-to-matrix 0 (send block get-x-part3) (send block get-y-part3) matrix)
-;      (ins-to-matrix 0 (send block get-x-part4) (send block get-y-part4) matrix))
+    ;; Tar bort block. Sätter nollor vid blockets coordinater. Inargument: blockets coordinater
+    (define/public (remove-block block-coord)
+      (let ((part1 (first block-coord))  ;; de fyra delarnas coordinater
+            (part2 (second block-coord))
+            (part3 (third block-coord))
+            (part4 (fourth block-coord)))
+        (ins-to-matrix 0 (car part1) (cadr part1) matrix)
+        (ins-to-matrix 0 (car part2) (cadr part2) matrix)
+        (ins-to-matrix 0 (car part3) (cadr part3) matrix)
+        (ins-to-matrix 0 (car part4) (cadr part4) matrix)))
 
       
 ;    (define (random-from-to n m)
@@ -165,6 +118,7 @@
                 (else (count-to-row (cdr board) (- y 1)))))
         (count-to-row matrix y))
 
+    ;;;;;;;;;;;; ersätter remove-row?...
       ;; Tar bort rad y och flyttar ner allt över.
       (define/public (collapse-from y)
         (define (build-matrix y new-matrix)
@@ -203,7 +157,7 @@
       (define (make-coord-list y board coord-list)
         (cond ((null? board) coord-list)
               ((not (row-of-zeros? (car board)))
-               (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list)))
+               (make-coord-list (+ y 1) (cdr board) (append (take-occ-coord y (car board)) coord-list))) ;;;* (vid append (- y 1) löser bara om den kommer ovanifrån...)
               (else (make-coord-list (+ y 1) (cdr board) coord-list))))
       (make-coord-list 1 matrix '()))
     

@@ -12,12 +12,6 @@
                      [x 0]	 
                      [y 0]))
 
-(define *game-area*
-  (new horizontal-panel%
-       [parent *window*]
-       [alignment '(center center)]
-       [min-height 570]))
-
 (define (draw-grid canvas dc x y width height color)
   (send dc set-brush color 'solid)
   (send dc set-pen "black" 2 'solid)
@@ -69,13 +63,11 @@
          (send dc draw-text "You won!" 520 50))
         (else void)))
 
-;; Visar score. (används till spelbrädens score och high-score)
-;; Inargument: canvas dc. Poäng som nummer "score". Texten före poäng "text" (tex "High score: ")
-(define (draw-score canvas dc score x y text)
-  (let ((score-text (if (eof-object? score)
-                          text
-                          (string-join (append (list text) (list score))))))
-    (send dc set-font (make-font #:size 20 #:family 'roman #:weight 'bold))
+;; Visar spelbrädets score
+(define (draw-score canvas dc board-score x y)
+  (let ((score-text (string-join (append '("Score: ") (list board-score)))))
+    (send dc set-font (make-font #:size 20 #:family 'roman
+                                 #:weight 'bold))
     (send dc set-text-foreground "black")
     (send dc draw-text score-text x y)))
 
@@ -85,7 +77,7 @@
         (block-color-b1 (send (send *board-1* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
     (draw-board canvas dc *board-1* 500 100)
     (draw-block canvas dc cur-block-b1 block-color-b1 500 100)
-    (draw-score canvas dc (number->string (send *board-1* get-score)) 500 500 "Score: ")))
+    (draw-score canvas dc (number->string (send *board-1* get-score)) 500 500)))
 
 ;; Allt som ska ritas när man spelar på board-2. (spelbräde, block, score)
 (define (show-board-2 canvas dc)
@@ -93,13 +85,10 @@
         (block-color-b2 (send (send *board-2* get-cur-block) get-color-name))) ;; färgen hos cur-block-b1
     (draw-board canvas dc *board-2* 100 100)
     (draw-block canvas dc cur-block-b2 block-color-b2 100 100)
-    (draw-score canvas dc (number->string (send *board-2* get-score)) 100 500 "Score: ")))
+    (draw-score canvas dc (number->string (send *board-2* get-score)) 100 500)))
 
 ;; Allt som ska ritas stoppas här.
 (define (draw-cycle canvas dc)
-  (draw-score canvas dc (call-with-input-file "high-score.data"
-                          (lambda (score)
-                            (read-string 5 score))) 30 20 "High score: ")
   (cond ((send *board-1* singelplayer?)
          (show-board-1 canvas dc))
         ((send *board-2* singelplayer?)
@@ -144,21 +133,44 @@
 
 (define *game-canvas*
   (new input-canvas%
-       [parent *game-area*]
+       [parent *window*]
        [paint-callback draw-cycle]
-       [keyboard-handler (lambda (key-event) ;; Vid knapptryck skickas vissa key-events till en lista. Är aktiva tills de tas bort vid 'release.
+       [keyboard-handler (lambda (key-event) ;; vid knapptryck skickas vissa key-events till en lista. Är aktiva tills de tas bort vid 'release.
                            (let ((key-code (send key-event get-key-code))
                                  (key-code-release (send key-event get-key-release-code)))
                              (if (not (equal? key-code 'release))
-                                 (cond ((or (send *board-1* direction-key? key-code) (send *board-2* direction-key? key-code))
-                                        (send *board-1* add-active-key key-code)
-                                        (send *board-2* add-active-key key-code)
-                                        (key-list-to-move (send *board-1* get-active-keys) *board-1*)
-                                        (key-list-to-move (send *board-2* get-active-keys) *board-2*))
-                                       (else (move key-code *board-1*)
-                                             (move key-code *board-2*)))
+                                 ;;;; ska jag dela upp det så?...
+                                 (cond  ((send *board-1* direction-key? key-code) ;; bara "direction-keys" skickas till active-keys
+                                         (send *board-1* add-active-key key-code)
+                                         (send-list-to-move (send *board-1* get-active-keys)))
+                                        ((send *board-2* direction-key? key-code)
+                                         (send *board-2* add-active-key key-code)
+                                         (send-list-to-move (send *board-2* get-active-keys)))
+                                        (else (move key-code *board-1*)
+                                              (move key-code *board-2*)))
                                  (begin (send *board-1* remove-active-key key-code-release)
                                         (send *board-2* remove-active-key key-code-release)))))]))
+
+                             ;(cond ((not (equal? key-code 'release))
+                             ;       (move key-event *board-1*))
+                             ;      ((or (or (or (or (or (equal? key-code 'left) (equal? key-code 'right)) (equal? key-code #\a)) (equal? key-code #\d)) (equal? key-code 'down)) (equal? key-code #\s))
+                             ;       (send *board-1* add-active-key key-code)
+                             ;       (send-list-to-move (send *board-1* get-active-keys)))
+                             ;      (else (send *board-1* remove-active-key key-code-release)))))]))
+                                    
+                                   ;;; bara vissa tangenter till lista
+;                             (if (not (equal? key-code 'release))  ;; testa get-key-release-code och 'press om det blir för långsamt med många key-code
+;                                 (begin (send *board-1* add-active-key key-code)
+;                                        (test-send-move (send *board-1* get-active-keys)))
+;                                 (send *board-1* remove-active-key key-code-release))))]))
+
+
+                                 ;(begin (move key-code *board-1*)
+                                 ;       (move key-code *board-2*))
+
+;;;; använd for-each som i dokumentationen på listan!
+;;;; På "key down" lägg till tangenter i lista. Key up ta bort. Fortsätt med key-event så länge key ligger i listan. (inte använda equal?... "key=?"?)
+;;;; on-key,  on-release
                                  
 (send *game-canvas* focus) ;; gör att tangentbordshändelser har "fokus" på *game-canvas*
 
